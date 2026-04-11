@@ -1,8 +1,8 @@
 # Java 示例：业务密钥引导 + 通信密钥 + 落库封装
 
-> **范围**：以下文件名、注解与类名均为 **Java / Spring Boot 生态示例**，用于 Slacker Official 等 JVM 后端参考。**非 Java 项目请勿照搬类名与包路径**；仅复用「职责划分」与「数据流」概念，并用各自语言的加密库实现。
+> **范围**：以下文件名、注解与类名均为 **Java / Spring Boot 生态示例**，仅供 JVM 后端实现时对照。**非 Java 项目请勿照搬类名与包路径**；仅复用「职责划分」与「数据流」概念，并用各自语言的加密库实现。
 
-说明：以下为仓库中相关 Java 类的结构快照，便于复制到其它 JVM 项目；合并后请以编译通过与安全评审为准。
+说明：以下为常见模块划分的结构快照，便于迁移到其它 JVM 项目；落地时类名与包名请按本团队规范自定，合并后请以编译通过与安全评审为准。
 
 ## Java 示例：`CryptoProperties`（`@ConfigurationProperties(prefix = "app.crypto")`）
 
@@ -47,10 +47,6 @@
 
 - `TransportKeyMismatchException` → `ApiResponse.fail(ApiCodes.TRANSPORT_KEY_STALE, message)`
 
-## Java 示例：仓库内权威路径（Slacker Official）
+## Java 示例：模块落位建议（路径自定）
 
-- `backend/src/main/java/com/slacker/official/util/RSAUtils.java`、`AESUtils.java`
-- `backend/.../config/CryptoProperties.java`、`application.yml` → `app.crypto`
-- `backend/.../crypto/BusinessCryptoKeyManager.java`、`TransportRsaHolder.java`、`TransportPayloadCrypto.java`、`BusinessDataCrypto.java`
-- `backend/.../controller/CryptoController.java`
-- 客户端参考实现（TypeScript / Web Crypto，**非 Java**）：`frontend/src/utils/transportCrypto.ts`、`admin/src/utils/transportCrypto.ts`
+实现时可按职责拆分为：**配置绑定**（如 `@ConfigurationProperties`）、**业务密钥引导**、**通信密钥持有者**、**落库加解密服务**、**公钥下发接口**、**统一异常映射**等；工具类（RSA/AES PEM 与分段加解密）宜放在独立 `util` 或 `crypto` 包。客户端侧（任意技术栈）需实现与服务端一致的 **OAEP 分段**与 **AES-GCM 报文布局**，勿在技能文档中绑定某一仓库的目录结构。

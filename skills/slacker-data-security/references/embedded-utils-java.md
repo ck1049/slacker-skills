@@ -7,12 +7,12 @@
 
 > **非 Java 项目请勿直接复制以下代码**；请用目标语言的标准库或经审计的加密库实现等价行为（OAEP-SHA256 分段、AES-GCM IV+tag 布局等）。
 >
-> 来源：`backend/src/main/java/com/slacker/official/util/`（Slacker Official 仓库）。若与仓库冲突，以仓库为准。本文件较长，优先在仓库中阅读权威源码；此处用于 JVM 离线搬运。
+> 下述代码为 **JDK 侧 RSA/OAEP 与 AES-GCM 的示意快照**；包名 `com.example.security` 仅为示例，合并到实际工程时请替换为自有包名，并以你方代码审查结论为准。
 
 ## Java 示例：RSAUtils.java
 
 ```java
-package com.slacker.official.util;
+package com.example.security;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.OAEPParameterSpec;
@@ -246,7 +246,7 @@ public final class RSAUtils {
 ## Java 示例：AESUtils.java
 
 ```java
-package com.slacker.official.util;
+package com.example.security;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;

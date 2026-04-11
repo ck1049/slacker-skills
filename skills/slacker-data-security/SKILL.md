@@ -1,52 +1,43 @@
 ---
 name: slacker-data-security
 description: >-
-  Language-agnostic layered encryption playbook: business RSA + AES at rest (externalized keys),
-  ephemeral transport RSA (memory-only) for client-to-server sensitive payloads, irreversible password
-  hashing after transport decrypt, stable wire formats (RSA-OAEP-SHA256 chunking, AES-GCM with 12-byte IV),
-  and stale-key signaling (e.g. HTTP/API code 4001). Use when designing or reviewing crypto for any stack
-  (mobile, desktop, web service, embedded clients), adding sensitive PII fields, key bootstrap on startup,
-  hybrid RSA+AES message bodies, or debugging post-restart decrypt failures. Triggers: 数据安全, 业务密钥,
-  通信RSA, 客户端加密, transport public key, ENC$RSA$, ENC$AES$, OAEP 分段, Slacker data security,
-  slacker-data-security.
+  与编程语言无关的分层数据安全规范：业务 RSA + 业务 AES 落库/落盘（外置密钥）、仅驻内存的通信 RSA 用于客户端到服务端的敏感载荷、
+  通信解密后再做不可逆口令慢哈希、RSA-OAEP-SHA256 分段与 AES-GCM（12 字节 IV）等稳定报文格式、以及通信密钥失效时的稳定错误码（如 4001）。
+  适用于设计或评审任意技术栈（移动端、桌面端、Web 服务、嵌入式客户端）的敏感字段、启动时密钥引导、混合 RSA+AES 报文体、
+  或服务重启后解密失败排查。触发词：数据安全、业务密钥、通信 RSA、客户端加密、公钥轮换、ENC$RSA$、ENC$AES$、OAEP 分段、
+  slacker-data-security。
 ---
 
-# Slacker data security (language-agnostic)
+# Slacker 数据安全（与语言无关）
 
-## Instructions
+## 使用说明
 
-Apply the model below in the **host language and crypto libraries** of the product. **Do not copy Java types or APIs** unless the stack is JVM; for Java/JVM stacks, read the labeled **Java 示例** under `references/`.
+在目标产品的**宿主语言与加密库**中落实下列模型。**除非技术栈为 JVM，否则不要照搬 Java 类型与 API**；Java 技术栈请阅读 `references/` 下标注为 **Java 示例** 的参考文档。
 
-1. **Maintain two RSA roles plus one business symmetric key (AES-256-GCM recommended)**
-   - **Business RSA / business AES**: long-lived keys for server-side storage; load from **configured paths** or a secrets manager; **generate and persist** if files are missing (first boot), with secure file permissions.
-   - **Transport RSA**: **memory-only** key pair per process; **clients** (browser, mobile, desktop) fetch a fresh **public key** after deploy or restart via a dedicated endpoint or channel doc.
+1. **两套 RSA 角色 + 一套业务对称密钥（建议 AES-256-GCM）**
+   - **业务 RSA / 业务 AES**：用于服务端长期存储；从**配置文件路径**或密钥管理系统加载；若密钥文件缺失则在**首次启动**生成并落盘，并设置严格的文件权限。
+   - **通信 RSA**：每个进程内仅驻内存的密钥对；**客户端**（浏览器、移动应用、桌面应用等）在部署或服务重启后，通过**专用接口或文档约定**重新获取公钥。
 
-2. **At-rest encoding**
-   - **Small sensitive scalars** (email, phone, address, reversible third-party secrets): encrypt with **business RSA**, store as an explicit prefix (e.g. `ENC$RSA$`) + Base64(ciphertext bytes). Chunk per RSA OAEP limits for the chosen modulus.
-   - **Large text or blobs**: encrypt with **business AES-GCM** (or equivalent AEAD), store as prefix (e.g. `ENC$AES$`) + Base64(`IV || ciphertext+tag`). If legacy rows lack the prefix, treat as plaintext for read paths until migrated.
+2. **落库/落盘编码**
+   - **小体量敏感标量**（邮箱、手机、地址、可逆的第三方口令等）：用**业务 RSA** 加密，存储为显式前缀（如 `ENC$RSA$`）+ Base64（密文字节）。按所选模数下的 RSA-OAEP 单段上限做分段。
+   - **大文本或二进制**：用**业务 AES-GCM**（或同等 AEAD）加密，存储为前缀（如 `ENC$AES$`）+ Base64（`IV || 密文+认证标签`）。历史数据若无前缀，读取路径可暂按明文处理直至迁移完成。
 
-3. **Transport (client to server)**
-   - Encrypt sensitive request parameters with the **transport RSA public key** using **RSA-OAEP with SHA-256** (or the same MGF1/OAEP parameters the server documents). Use the server-published **maximum plaintext chunk size** for segmentation; concatenate ciphertext blocks; then Base64 for JSON/binary-safe transport.
-   - **Irreversible passwords**: client encrypts password with transport RSA → server decrypts to plaintext → apply **slow password hashing** (bcrypt, Argon2, scrypt, PBKDF2 with appropriate work factor) → store **only** the password hash. Never store transport-RSA ciphertext of the password in the user store.
+3. **传输层（客户端 → 服务端）**
+   - 敏感请求参数使用**通信 RSA 公钥**加密，算法为 **RSA-OAEP + SHA-256**（或与服务端文档一致的 MGF1/OAEP 参数）。按服务端公布的**单段最大明文字节数**分段；各段密文**拼接**后再 Base64，以便 JSON/二进制通道传输。
+   - **不可逆登录口令**：客户端用通信 RSA 加密口令 → 服务端解密得到明文 → 使用**慢哈希**（bcrypt、Argon2、scrypt、带合适迭代强度的 PBKDF2 等）→ 仅存口令摘要。**禁止**在用户库中存储「通信 RSA 加密后的口令密文」。
 
-4. **Stale transport key**
-   - If transport decrypt fails (wrong padding, length mismatch after restart): return a **dedicated stable error code** (e.g. `4001`) and message so the **client** refetches the public key and retries.
+4. **通信密钥失效**
+   - 当通信 RSA 解密失败（填充错误、重启后密钥轮换导致长度不匹配等）：返回**稳定、可识别的业务错误码**（例如 `4001`）与明确文案，提示**客户端**重新拉取公钥并重新加密后重试。
 
-5. **Wire format checklist (language-neutral)**
+5. **报文格式核对清单（与语言无关）**
 
-   - Publish from the server: PEM or SPKI for the transport public key, **modulus-related** `ciphertextBlockBytes`, and **oaepSha256MaxPlainChunkBytes** (or equivalent) so clients segment identically to the server.
-   - **RSA**: UTF-8 bytes → chunks ≤ max chunk → RSA-OAEP-SHA256 per chunk → concatenate → Base64.
-   - **AES-GCM**: random **12-byte IV**, 128-bit tag, output **`IV || (cipher+tag)`** then Base64.
+   - 服务端应下发：公钥的 PEM 或 SPKI、与模数相关的 **`ciphertextBlockBytes`**、以及 **`oaepSha256MaxPlainChunkBytes`**（或等价字段），保证客户端分段与服务端一致。
+   - **RSA**：UTF-8 明文字节 → 按不超过 `oaepSha256MaxPlainChunkBytes` 分段 → 每段 RSA-OAEP-SHA256 → 拼接密文 → 整体 Base64。
+   - **AES-GCM**：随机 **12 字节 IV**、**128 位**认证标签；输出 **`IV || (密文+标签)`** 后再 Base64。
 
-6. **Multi-IDE installation**
+## 参考文档（按需阅读）
 
-   - Canonical skill repo: **`git@github.com:ck1049/slacker-skills.git`**（HTTPS: `https://github.com/ck1049/slacker-skills.git`）。完整 **clone + 复制到各 IDE** 的命令见 **[references/install-multi-ide.md](references/install-multi-ide.md)**（含 Bash / PowerShell、全局与项目级、Codex `install-skill-from-github.py`、可选 `npx skills` 与 sparse clone）。
-   - 路径总览与免责声明仍见该文件中的「路径对照表」一节；各产品路径可能随版本变更，请以官方文档为准。
+- **[references/bootstrap-java.md](references/bootstrap-java.md)** — **Java 示例**：Spring 风格引导、前缀约定、异常映射（仅供参考）。
+- **[references/embedded-utils-java.md](references/embedded-utils-java.md)** — **Java 示例**：JDK RSA/AES 工具类快照（仅供参考；其它语言请使用经审计的加密实现）。
 
-## References (read as needed)
-
-- **[references/install-multi-ide.md](references/install-multi-ide.md)** — where to copy this skill folder per IDE (global vs project).
-- **[references/bootstrap-java.md](references/bootstrap-java.md)** — **Java 示例**：Spring-style bootstrap, prefixes, exception mapping (reference only).
-- **[references/embedded-utils-java.md](references/embedded-utils-java.md)** — **Java 示例**：JDK RSA/AES helper snapshots (reference only; prefer your language’s vetted crypto APIs).
-
-Keep links **one level deep** from this `SKILL.md`.
+从本 `SKILL.md` 到上述参考文件的链接保持**一层**即可。
