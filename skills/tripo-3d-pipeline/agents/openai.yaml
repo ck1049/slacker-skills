@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tripo AI 3D Pipeline"
+  short_description: "先核算点数、人民币和账户余额，再安全执行完整三维建模流程"
+  default_prompt: "Use $tripo-3d-pipeline to clarify, quote, and safely execute my Tripo 3D workflow."
