@@ -1,4 +1,6 @@
-# Six-part planning template (recommended, not required)
+# Ref2VA six-section rewrite template
+
+Use only for full-reference Ref2VA output. Write all sections in English except original-language dialogue, lyrics, and visible scene text. Follow `../references/official/ref-en.txt` for complete label and retention rules.
 
 ## subject_definitions
 [Identity, appearance, and reference roles.]
