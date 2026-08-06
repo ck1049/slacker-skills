@@ -1,5 +1,7 @@
 Task: T2VA
 Duration/aspect: [fill in]
+Reference decision: T2VA_DIRECT
+Reference rationale: [Why the explicit task does not need reusable media anchors.]
 
 integrated_multimodal_description: [Shot 1] [English audiovisual timeline. Put later cuts in the form `[Shot N] At MM:SS.mmm, the camera cuts to...`.]
 

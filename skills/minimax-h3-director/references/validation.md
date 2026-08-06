@@ -1,6 +1,13 @@
-# V1.3 validation checklist
+# V1.5 validation checklist
 
 - Mode is explicit or assumption is visible.
+- Reference decision is exactly one of `T2VA_DIRECT`, `REFERENCE_RECOMMENDED`, or `REFERENCE_REQUIRED`.
+- A blank project does not automatically trigger asset generation; a direct T2VA rationale is accepted for simple tasks.
+- Every asset request declares a capability rather than a fixed skill, vendor, model, or platform.
+- Automatic asset execution is supported by user authorization, available capability, and any required cost approval.
+- Only `verified` request results enter the H3 inventory; `planned`, `generated`, and `failed` items have no H3 labels.
+- `REFERENCE_RECOMMENDED` does not block an otherwise usable T2VA deliverable.
+- `REFERENCE_REQUIRED` blocks only prompts dependent on missing required assets and reports the missing capability, approval, or verification.
 - Total target runtime is explicit before prompt writing.
 - A target longer than 15 seconds is split into multiple independent H3 generation units.
 - Every generation unit is 4–15 seconds, has its own mode, and contains one complete mode-required prompt structure.

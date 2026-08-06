@@ -1,0 +1,25 @@
+asset_request_id: CHAR-MAIN-01
+status: planned
+necessity: required
+required_capability: image_generation
+asset_type: character_reference
+purpose: Preserve the protagonist's identity and clothing across independent H3 generation units.
+description: >-
+  Replace with an observable, production-ready description of the required asset.
+deliverables:
+  - front_view
+  - side_view
+  - back_view
+recommended_spec:
+  aspect_ratio: "1:1"
+  resolution: "1536x1536"
+  background: neutral
+used_by_units:
+  - "01"
+acceptance_checks:
+  - The subject identity and clothing are unambiguous.
+  - The output is a readable image file inside the user-authorized project scope.
+result:
+  path: null
+  verification: pending
+  failure_reason: null

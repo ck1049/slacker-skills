@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.0 — 2026-08-07
+
+- Added `T2VA_DIRECT`, `REFERENCE_RECOMMENDED`, and `REFERENCE_REQUIRED` decisions for empty and incomplete projects.
+- Preserved a no-reference fast path for simple one-off T2VA tasks.
+- Added capability-neutral asset requests without hard dependencies on skills, vendors, models, or platforms.
+- Added authorization and cost gates for automatic asset execution.
+- Added `planned`, `generated`, `verified`, and `failed` lifecycle states; only verified outputs may receive H3 labels.
+- Added an asset-request template and empty-project orchestration regression case.
+
 ## 1.4.1 — 2026-08-06
 
 - Added a filesystem-backed asset inventory gate before media-mode routing and label assignment.
