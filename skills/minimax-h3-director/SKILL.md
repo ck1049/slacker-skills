@@ -1,6 +1,6 @@
 ---
 name: minimax-h3-director
-description: Direct creative briefs, stories, scripts, and reference media into official-format MiniMax H3 prompts and shot plans. Use for H3 T2VA, I2VA, FL2VA, L2VA, Ref2VA, story adaptation, reference analysis, prompt debugging, and evidence-aware optimization.
+description: Direct creative briefs, long-form stories, scripts, and reference media into production plans and one or more paste-ready official-format MiniMax H3 prompts. Use for H3 T2VA, I2VA, FL2VA, L2VA, Ref2VA, novel-to-video adaptation, multi-clip episode breakdowns, per-clip asset manifests, ComfyUI or creator-platform handoff, continuity planning, reference analysis, prompt debugging, and evidence-aware optimization.
 ---
 
 # MiniMax H3 Director
@@ -16,26 +16,31 @@ The bundled official guides are authoritative for final field names, section ord
 
 ## Workflow
 
-1. Identify the H3 mode: T2VA, I2VA, FL2VA, L2VA, or full-reference Ref2VA. If the mode is uncertain, state the assumption.
-2. Extract subject identity, setting, time, action, camera, lighting, audio, dialogue, constraints, and desired output.
-3. Map supplied references by role. For Ref2VA, use the official `<Subject N>`, `<Picture N>`, `<Video N>`, and `<Audio N>` rules. For I2VA, FL2VA, and L2VA, use the official picture-alignment instruction. T2VA uses no reference labels.
-4. Build a short shot plan. Give each shot one primary beat and keep continuity explicit.
-5. Write planning notes in the user's requested language, but write the copy-ready rewrite sections in English. Preserve dialogue, lyrics, and visible scene text in their original language.
-6. For T2VA/I2VA/FL2VA/L2VA, output `integrated_multimodal_description`, `overall_soundscape`, and `non_diegetic_music` in that order. For Ref2VA, output `subject_definitions`, `summary`, `retention_analysis`, `detailed_description`, `overall_soundscape`, and `non_diegetic_music` in that order.
-7. Run the checklist in `references/validation.md` and report assumptions, evidence level, and unresolved risks.
+1. Determine the requested total runtime before writing any H3 prompt. If the target exceeds 15 seconds, or the source contains more story beats than one 15-second clip can execute clearly, read `references/long-form-video-workflow.md` completely and plan multiple H3 generation units.
+2. Extract subject identity, setting, story beats, time, action, camera, lighting, audio, dialogue, constraints, and desired output. Adapt prose into observable audiovisual beats; do not map prose paragraphs directly to shots.
+3. For each generation unit independently, identify the H3 mode: T2VA, I2VA, FL2VA, L2VA, or full-reference Ref2VA. A long-form project may use different modes across units.
+4. Before selecting a media-input mode, build a verified asset inventory from files actually supplied, attached, or found inside the user-authorized search scope. Resolve every path and confirm it is a readable file. Never infer an asset from prose, a directory name, an expected production convention, or a desired shot. Never invent a filename, path, extension, asset ID, upload label, or “placeholder” asset. If no verified media remains, use T2VA when the request can proceed without references; otherwise stop and report the exact missing asset instead of fabricating it.
+5. Map only verified assets needed by that unit and enforce its input-asset budget. When a unit has media inputs, read `references/asset-binding-and-copy-ready.md` completely and output a unit-local asset binding manifest before the prompt. Reset `<Picture N>`, `<Video N>`, and `<Audio N>` numbering from 1 for each independent request. For Ref2VA, use the official `<Subject N>` rules. For I2VA, FL2VA, and L2VA, use the official picture-alignment instruction. T2VA uses no reference labels or manifest.
+6. Build the episode-level generation-unit table first, then a short shot plan inside each unit. Keep every unit between 4 and 15 seconds, give each shot one primary beat, and make handoff continuity explicit.
+7. Write one self-contained copy-ready prompt block per generation unit. Keep local filenames, paths, asset IDs, upload instructions, planning notes, and platform instructions outside that block. Inside it, refer to uploaded media only through official `<Picture N>`, `<Video N>`, and `<Audio N>` labels and derived `<Subject N>` labels. Reset every unit's internal timeline to `00:00.000`; every later cut time must be strictly less than that unit's duration.
+8. Write planning notes in the user's requested language, but write copy-ready rewrite sections in English. Preserve dialogue, lyrics, and visible scene text in their original language.
+9. For each T2VA/I2VA/FL2VA/L2VA unit, output `integrated_multimodal_description`, `overall_soundscape`, and `non_diegetic_music` in that order. For each Ref2VA unit, output `subject_definitions`, `summary`, `retention_analysis`, `detailed_description`, `overall_soundscape`, and `non_diegetic_music` in that order.
+10. Run the checklist in `references/validation.md`. For multi-unit documents, run `python scripts/validate_h3_segments.py <document.md>` and resolve every error before delivery. Do not use `--skip-asset-existence` for a user deliverable.
 
 ## Output contract
 
 Return, in order:
 
-- Task mode and assumptions.
-- Shot plan with timing, action, camera, continuity, and audio.
-- Copy-ready official-format English prompt.
+- Total target runtime, adaptation assumptions, and generation-unit count.
+- Episode-level generation-unit table with episode range, request duration, mode, story beat, continuity handoff, and per-unit asset budget.
+- Per-unit asset binding manifest, optional subject-source binding list, shot plan, and then exactly one self-contained official-format English prompt block.
 - Reference mapping and retention decisions, if references exist.
 - Validation notes: what is official, inferred, community-derived, or experimental.
 - One or two targeted alternatives only when they solve a real ambiguity.
 
-Do not include task assumptions, the planning table, evidence notes, validation notes, or render-setting commentary inside the copy-ready prompt block.
+Do not include task assumptions, planning tables, evidence notes, validation notes, platform instructions, filenames, paths, file extensions, or local asset IDs inside the copy-ready prompt block. The user must be able to copy everything inside the block without editing after attaching assets according to the manifest.
+
+For a target longer than 15 seconds, do not collapse all units into one shared three-field or six-section prompt. Shared character and continuity bibles may appear once at document level, but every copy-ready block must repeat the complete mode-required fields and include only references actually submitted for that unit.
 
 ## Evidence discipline
 
@@ -44,4 +49,4 @@ Do not include task assumptions, the planning table, evidence notes, validation 
 - `community_experience`: useful but not authoritative; do not state as MiniMax requirement.
 - `project_experiment`: observed by this project; include case ID and test conditions.
 
-Read `references/evidence-policy.md` before adding a rule. Read `references/official/upstream.md` for bundled-source provenance, `templates/` for reusable prompt forms, and `tests/cases/` for regression examples.
+Read `references/evidence-policy.md` before adding a rule. Read `references/official/upstream.md` for bundled-source provenance, `references/long-form-video-workflow.md` for multi-clip adaptation, `references/asset-binding-and-copy-ready.md` for portable media handoff, `templates/` for reusable prompt forms, and `tests/cases/` for regression examples.

@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.4.1 — 2026-08-06
+
+- Added a filesystem-backed asset inventory gate before media-mode routing and label assignment.
+- Prohibited invented, implied, convention-derived, and placeholder filenames or paths.
+- Made manifest asset existence checking the validator default, with an explicit test-fixture-only bypass.
+
+## 1.4.0 — 2026-08-06
+
+- Added a per-generation-unit reference asset binding manifest with official label, stable asset ID, path, type, and role.
+- Reset Picture, Video, and Audio numbering per independent request for portable platform handoff.
+- Required exactly one paste-ready prompt block containing labels only, with no filenames, paths, extensions, platform instructions, or project asset IDs.
+- Added optional subject-source binding lists for operator clarity.
+- Extended deterministic validation to catch missing, duplicate, unused, non-consecutive, or type-incompatible mappings and prompt path leakage.
+
+## 1.3.0 — 2026-08-06
+
+- Added a required long-form workflow for stories and target runtimes beyond 15 seconds.
+- Added episode-level generation-unit planning and per-unit local timelines.
+- Required one complete official prompt structure per 4–15 second H3 request.
+- Added per-unit Ref2VA asset budgets and cross-unit continuity handoffs.
+- Added a reusable multi-unit episode template, deterministic validator, and regression case based on a 180-second novel adaptation failure.
+
 ## 1.2.0 — 2026-08-06
 
 - Bundled exact copies of the official H3 base-mode and full-reference prompt guides under `references/official/`.

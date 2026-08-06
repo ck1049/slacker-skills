@@ -1,6 +1,12 @@
-# V1.0 validation checklist
+# V1.3 validation checklist
 
 - Mode is explicit or assumption is visible.
+- Total target runtime is explicit before prompt writing.
+- A target longer than 15 seconds is split into multiple independent H3 generation units.
+- Every generation unit is 4–15 seconds, has its own mode, and contains one complete mode-required prompt structure.
+- Every generation unit resets its internal timeline to `00:00.000`; no cut timestamp reaches or exceeds the unit duration.
+- Episode-level timing and unit-local timing are not mixed in the copy-ready prompt.
+- Long-form output includes a generation-unit table and continuity handoff states.
 - The matching official base or full-reference guide was read before prompt generation.
 - Base modes use the ordered three-field structure; Ref2VA uses the ordered six-section structure.
 - Subject identity and continuity anchors are concrete.
@@ -10,6 +16,16 @@
 - Dialogue, sound, and music are separated from visual action.
 - Rewrite sections are English; dialogue, lyrics, and visible text preserve their original language.
 - Later shots use increasing `MM:SS.mmm` cut times within the requested duration.
+- Ref2VA input assets are budgeted per unit: at most 9 images, 3 videos, 3 audio clips, and 12 mixed files; video and audio duration limits follow the current official guide.
+- Shared project references are filtered to the subset actually submitted for each unit; unused global references do not appear in that unit's prompt.
+- Every media-input unit has a canonical binding manifest outside the copy-ready block.
+- Every manifest entry comes from a filesystem-backed inventory within the user's authorized scope; no desired, implied, guessed, or placeholder asset is treated as supplied.
+- Every manifest path resolves to an existing readable regular file. Missing files are reported and removed from routing rather than replaced with invented filenames.
+- Upload labels restart from 1 per media category for each independent request and have no gaps.
+- Each prompt `<Picture N>`, `<Video N>`, and `<Audio N>` has exactly one manifest mapping with a compatible file type.
+- Every manifest media label is used inside the prompt; no unused upload is requested.
+- Local paths, filenames, file extensions, project asset IDs, and platform instructions are absent from the copy-ready block.
+- `<Subject N>` definitions cite official media labels rather than local filenames when provenance is needed.
 - Prompt length is proportional to task complexity; no fixed word-count rule is applied.
 - Hard constraints are distinguishable from stylistic preferences.
 - Evidence labels are present for non-obvious rules.
