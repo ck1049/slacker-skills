@@ -20,12 +20,15 @@
 - Opening state: [...]
 - Ending state: [...]
 - Next-unit handoff: [...]
+- Prompt status: text_ready
+- Asset binding status: verified
+- Execution status: copy_ready
 
 ### Reference asset binding manifest — do not copy into the prompt
 
-- <Picture 1> | CHAR-MAIN | D:\project\characters\main.png | image | protagonist identity and clothing
-- <Picture 2> | SCENE-MAIN | D:\project\scenes\main.png | image | environment and lighting
-- <Audio 1> | VOICE-MAIN | D:\project\audio\main.mp3 | audio | voice timbre for <Subject 1> (S1)
+- <Picture 1> | CHAR-MAIN | D:\project\characters\main.png | image | verified | protagonist identity and clothing
+- <Picture 2> | SCENE-MAIN | D:\project\scenes\main.png | image | verified | environment and lighting
+- <Audio 1> | VOICE-MAIN | D:\project\audio\main.mp3 | audio | verified | voice timbre for <Subject 1> (S1)
 
 ### Subject-source bindings — do not copy into the prompt
 
@@ -47,3 +50,19 @@
 ```
 
 Repeat the complete `H3 Generation Unit` section for every unit.
+
+For a future unit that consumes Unit 01 before its output exists, use for example:
+
+```markdown
+- Prompt status: text_ready
+- Asset binding status: pending_upstream
+- Execution status: blocked_until_verified
+
+### Reference asset binding manifest — do not copy into the prompt
+
+- <Video 1> | UNIT-01-VIDEO | unit://01/output/video | video | pending_upstream | direct continuation
+
+### Prewritten prompt — asset binding pending
+```
+
+Include `<Video 1>` in that future prompt now. Replace only the manifest URI/status and readiness metadata after Unit 01 is verified.

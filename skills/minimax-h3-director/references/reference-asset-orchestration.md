@@ -52,12 +52,12 @@ Otherwise output the request and continue with T2VA when the decision is recomme
 
 Track each request with one status:
 
-- `planned`: specified but not executed; never bind to an H3 label.
-- `generated`: a capability reported output, but the file has not yet passed verification; never bind it.
+- `planned`: specified but not executed. It may reserve a label only in a future prewritten prompt through a declared `asset-request://` deferred binding; it is not an executable H3 input.
+- `generated`: a capability reported output, but the file has not yet passed verification. A reserved future label remains blocked until verification.
 - `verified`: the resolved file exists, is readable, has the expected media type, and is inside the authorized scope; it may enter the asset inventory.
 - `failed`: execution or verification failed; report the reason and choose retry, T2VA degradation, or a blocked handoff according to necessity.
 
-After execution, return control to the Director. Re-scan files rather than trusting proposed output names. Select I2VA, FL2VA, L2VA, or Ref2VA only from verified assets. Planning records and generated-but-unverified outputs are not H3 inputs.
+After execution, return control to the Director. Re-scan files rather than trusting proposed output names. Select an immediately executable I2VA, FL2VA, L2VA, or Ref2VA request only from verified assets. Planning records and generated-but-unverified outputs may appear only as deferred bindings in future prewritten prompts; they are not current H3 inputs.
 
 ## Minimum-request discipline
 

@@ -1,11 +1,11 @@
-# V1.5 validation checklist
+# V1.6 validation checklist
 
 - Mode is explicit or assumption is visible.
 - Reference decision is exactly one of `T2VA_DIRECT`, `REFERENCE_RECOMMENDED`, or `REFERENCE_REQUIRED`.
 - A blank project does not automatically trigger asset generation; a direct T2VA rationale is accepted for simple tasks.
 - Every asset request declares a capability rather than a fixed skill, vendor, model, or platform.
 - Automatic asset execution is supported by user authorization, available capability, and any required cost approval.
-- Only `verified` request results enter the H3 inventory; `planned`, `generated`, and `failed` items have no H3 labels.
+- Only `verified` results are current executable H3 inputs. Declared future dependencies may reserve labels in prewritten future prompts but remain blocked until verification.
 - `REFERENCE_RECOMMENDED` does not block an otherwise usable T2VA deliverable.
 - `REFERENCE_REQUIRED` blocks only prompts dependent on missing required assets and reports the missing capability, approval, or verification.
 - Total target runtime is explicit before prompt writing.
@@ -26,8 +26,11 @@
 - Ref2VA input assets are budgeted per unit: at most 9 images, 3 videos, 3 audio clips, and 12 mixed files; video and audio duration limits follow the current official guide.
 - Shared project references are filtered to the subset actually submitted for each unit; unused global references do not appear in that unit's prompt.
 - Every media-input unit has a canonical binding manifest outside the copy-ready block.
-- Every manifest entry comes from a filesystem-backed inventory within the user's authorized scope; no desired, implied, guessed, or placeholder asset is treated as supplied.
-- Every manifest path resolves to an existing readable regular file. Missing files are reported and removed from routing rather than replaced with invented filenames.
+- Every verified manifest entry comes from a filesystem-backed inventory within the user's authorized scope; no desired, implied, guessed, or placeholder file is treated as supplied.
+- Every deferred entry has a logical URI, compatible type, declared producer and consumer, and blocked execution state.
+- Unit dependencies point only backward; self, future, and missing dependencies are rejected.
+- Planning validation permits unresolved logical bindings; execution validation requires all bindings through its frontier to be verified; final validation requires all bindings to be verified.
+- Every verified manifest path resolves to an existing readable regular file. Missing files are reported rather than replaced with invented filenames.
 - Upload labels restart from 1 per media category for each independent request and have no gaps.
 - Each prompt `<Picture N>`, `<Video N>`, and `<Audio N>` has exactly one manifest mapping with a compatible file type.
 - Every manifest media label is used inside the prompt; no unused upload is requested.

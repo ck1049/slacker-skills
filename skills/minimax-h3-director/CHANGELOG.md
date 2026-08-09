@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 — 2026-08-09
+
+- Added deferred bindings for earlier unit video/audio outputs, derived final frames, and planned generated references.
+- Allowed future prewritten prompts to contain their final official media labels without inventing filenames.
+- Added explicit text, asset-binding, and execution readiness states.
+- Added planning, execution-frontier, and final validation phases.
+- Preserved strict existence checks for every binding claimed as verified or currently executable.
+
 ## 1.5.0 — 2026-08-07
 
 - Added `T2VA_DIRECT`, `REFERENCE_RECOMMENDED`, and `REFERENCE_REQUIRED` decisions for empty and incomplete projects.

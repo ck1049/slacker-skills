@@ -6,11 +6,11 @@ Evidence boundary: the meanings of `<Subject N>`, `<Picture N>`, `<Video N>`, an
 
 ## 1. Binding manifest outside the prompt
 
-Before assigning any label, enumerate the files in the user-authorized scope and create an internal verified inventory containing the resolved path, media type, and intended role. A manifest entry may be created only from that inventory.
+Before assigning an immediately executable label, enumerate the files in the user-authorized scope and create an internal verified inventory containing the resolved path, media type, and intended role. A future unit may instead reserve a label through the typed logical dependency contract in `deferred-asset-binding.md`.
 
 Hard rules:
 
-- Confirm every manifest path exists and resolves to a readable regular file at generation time.
+- Confirm every entry marked `verified` exists and resolves to a readable regular file. A deferred logical URI is allowed only in planning or in a future unit beyond the current execution frontier.
 - Copy the actual filename/path from filesystem results; never compose one from a character name, scene name, script text, or naming convention.
 - Treat a mentioned-but-unavailable asset as missing, not supplied. Do not create a label for it.
 - Do not use examples such as `D:\project\characters\main.png`, `[character image]`, `TODO`, or guessed extensions in a deliverable.
@@ -22,18 +22,21 @@ Place this section before the unit-local shot plan:
 ```markdown
 ### Reference asset binding manifest — do not copy into the prompt
 
-- <Picture 1> | CHAR-YECUN | D:\project\characters\ye-cun.png | image | character identity and clothing
-- <Picture 2> | SCENE-WHITE-FOG | D:\project\scenes\white-fog.png | image | environment and lighting
-- <Audio 1> | VOICE-YECUN | D:\project\audio\ye-cun.mp3 | audio | voice timbre for <Subject 1> (S1)
+- <Picture 1> | CHAR-YECUN | D:\project\characters\ye-cun.png | image | verified | character identity and clothing
+- <Picture 2> | SCENE-WHITE-FOG | D:\project\scenes\white-fog.png | image | verified | environment and lighting
+- <Audio 1> | VOICE-YECUN | D:\project\audio\ye-cun.mp3 | audio | verified | voice timbre for <Subject 1> (S1)
 ```
 
-Each line has five pipe-separated values:
+Each new line has six pipe-separated values:
 
 1. Unit-local official upload label.
 2. Stable project asset ID used only for production tracking.
 3. Exact local filename or path used by the operator.
 4. Asset type: `image`, `video`, or `audio`.
-5. Human-readable binding role.
+5. Binding status: `verified`, `pending_upstream`, `pending_generation`, or `generated`.
+6. Human-readable binding role.
+
+The legacy five-field form implies `verified`. Read `deferred-asset-binding.md` before using any non-verified status or logical URI.
 
 Use absolute paths when the document stays on the same workstation; use project-relative paths for a portable project package. Paths belong only in the manifest.
 

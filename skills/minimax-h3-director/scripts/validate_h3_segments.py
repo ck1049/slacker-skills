@@ -30,13 +30,15 @@ INPUT_ASSETS = re.compile(
 )
 CUT_TIME = re.compile(r"\bAt\s+(\d{2}):(\d{2}\.\d{3})\b")
 COPY_READY_BLOCK = re.compile(
-    r"^### Copy-ready prompt[^\n]*\n+```text\s*\n(.*?)\n```\s*$",
+    r"^### (?:Copy-ready|Prewritten) prompt[^\n]*\n+```text\s*\n(.*?)\n```\s*$",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 MANIFEST_LINE = re.compile(
     r"^-\s*(<(Picture|Video|Audio)\s+(\d+)>)\s*\|\s*"
     r"([A-Z0-9][A-Z0-9_-]*)\s*\|\s*(.+?)\s*\|\s*"
-    r"(image|video|audio)\s*\|\s*(.+?)\s*$",
+    r"(image|video|audio)\s*\|\s*"
+    r"(?:(verified|pending_upstream|pending_generation|generated)\s*\|\s*)?"
+    r"(.+?)\s*$",
     re.MULTILINE | re.IGNORECASE,
 )
 MEDIA_LABEL = re.compile(r"<(Picture|Video|Audio)\s+(\d+)>", re.IGNORECASE)
@@ -48,6 +50,15 @@ PATH_LEAK = re.compile(
 PLATFORM_LEAK = re.compile(
     r"\b(?:ComfyUI|MiniMax\s+Hub|LibTV)\b|\b(?:upload|attach)\s+(?:the\s+)?(?:file|asset)\b|\bthe\s+file\s+at\b",
     re.IGNORECASE,
+)
+PROMPT_STATUS = re.compile(r"^- Prompt status:\s*(\S+)\s*$", re.MULTILINE)
+BINDING_STATUS = re.compile(r"^- Asset binding status:\s*(\S+)\s*$", re.MULTILINE)
+EXECUTION_STATUS = re.compile(r"^- Execution status:\s*(\S+)\s*$", re.MULTILINE)
+UNIT_OUTPUT_URI = re.compile(r"^unit://(\d+)/output/(video|audio)$", re.IGNORECASE)
+DERIVED_FRAME_URI = re.compile(r"^derive://unit-(\d+)/final-frame$", re.IGNORECASE)
+ASSET_REQUEST_URI = re.compile(r"^asset-request://([A-Z0-9][A-Z0-9_-]*)$", re.IGNORECASE)
+ASSET_REQUEST_DECLARATION = re.compile(
+    r"^asset_request_id:\s*([A-Z0-9][A-Z0-9_-]*)\s*$", re.MULTILINE | re.IGNORECASE
 )
 
 EXTENSION_TYPES = {
@@ -85,6 +96,7 @@ class ManifestEntry:
     asset_id: str
     path: str
     asset_type: str
+    status: str
 
 
 def parse_units(text: str) -> list[Unit]:
@@ -131,6 +143,7 @@ def parse_manifest(body: str) -> list[ManifestEntry]:
                 asset_id=match.group(4),
                 path=match.group(5).strip(),
                 asset_type=match.group(6).lower(),
+                status=(match.group(7) or "verified").lower(),
             )
         )
     return entries
@@ -152,6 +165,11 @@ def validate_manifest(
     expected_counts: tuple[int, int, int, int] | None,
     asset_root: Path,
     check_asset_existence: bool,
+    phase: str,
+    through_unit: int | None,
+    unit_number: int,
+    unit_numbers: set[int],
+    asset_request_counts: dict[str, int],
 ) -> list[str]:
     errors: list[str] = []
     entries = parse_manifest(body)
@@ -182,6 +200,33 @@ def validate_manifest(
                 f"{category} labels are numbered {numbers}; expected consecutive numbering from 1"
             )
 
+    unresolved_entries = [entry for entry in entries if entry.status != "verified"]
+    should_be_executable = phase == "final" or (
+        phase == "execution" and through_unit is not None and unit_number <= through_unit
+    )
+
+    if unresolved_entries:
+        prompt_status = PROMPT_STATUS.search(body)
+        binding_status = BINDING_STATUS.search(body)
+        execution_status = EXECUTION_STATUS.search(body)
+        if not prompt_status or prompt_status.group(1).lower() != "text_ready":
+            errors.append("deferred unit must declare `- Prompt status: text_ready`")
+        if not binding_status or binding_status.group(1).lower() not in {
+            "pending_upstream",
+            "pending_generation",
+            "generated",
+        }:
+            errors.append("deferred unit must declare a pending asset binding status")
+        if not execution_status or execution_status.group(1).lower() != "blocked_until_verified":
+            errors.append(
+                "deferred unit must declare `- Execution status: blocked_until_verified`"
+            )
+        if should_be_executable:
+            errors.append(
+                f"unit has unresolved bindings during `{phase}` validation: "
+                + ", ".join(entry.label for entry in unresolved_entries)
+            )
+
     for entry in entries:
         expected_type = {
             "Picture": "image",
@@ -192,12 +237,13 @@ def validate_manifest(
             errors.append(
                 f"{entry.label} declares type `{entry.asset_type}`; expected `{expected_type}`"
             )
-        suffix = Path(entry.path).suffix.lower()
-        if suffix and suffix not in EXTENSION_TYPES[entry.asset_type]:
-            errors.append(
-                f"{entry.label} path extension `{suffix}` is incompatible with `{entry.asset_type}`"
-            )
-        if check_asset_existence:
+        if entry.status == "verified":
+            suffix = Path(entry.path).suffix.lower()
+            if suffix and suffix not in EXTENSION_TYPES[entry.asset_type]:
+                errors.append(
+                    f"{entry.label} path extension `{suffix}` is incompatible with `{entry.asset_type}`"
+                )
+        if check_asset_existence and entry.status == "verified":
             written_path = Path(entry.path)
             resolved_path = written_path if written_path.is_absolute() else asset_root / written_path
             try:
@@ -207,6 +253,45 @@ def validate_manifest(
             else:
                 if not resolved_path.is_file():
                     errors.append(f"{entry.label} does not resolve to a regular file: `{entry.path}`")
+        elif entry.status == "pending_upstream":
+            unit_uri = UNIT_OUTPUT_URI.fullmatch(entry.path)
+            frame_uri = DERIVED_FRAME_URI.fullmatch(entry.path)
+            if not unit_uri and not frame_uri:
+                errors.append(
+                    f"{entry.label} pending_upstream binding has invalid logical URI: `{entry.path}`"
+                )
+            else:
+                producer = int((unit_uri or frame_uri).group(1))
+                if producer not in unit_numbers:
+                    errors.append(f"{entry.label} references missing producer unit {producer:02d}")
+                if producer >= unit_number:
+                    errors.append(
+                        f"{entry.label} in Unit {unit_number:02d} must reference an earlier unit, not Unit {producer:02d}"
+                    )
+                expected_category = "Picture" if frame_uri else unit_uri.group(2).title()
+                if entry.category != expected_category:
+                    errors.append(
+                        f"{entry.label} category is incompatible with logical URI `{entry.path}`"
+                    )
+        elif entry.status == "pending_generation":
+            request_uri = ASSET_REQUEST_URI.fullmatch(entry.path)
+            if not request_uri:
+                errors.append(
+                    f"{entry.label} pending_generation binding must use `asset-request://ID`"
+                )
+            else:
+                request_id = request_uri.group(1).upper()
+                declaration_count = asset_request_counts.get(request_id, 0)
+                if declaration_count != 1:
+                    errors.append(
+                        f"{entry.label} references asset request `{request_id}` with "
+                        f"{declaration_count} declarations; expected exactly one"
+                    )
+        elif entry.status == "generated":
+            if entry.path.startswith(("unit://", "derive://", "asset-request://")):
+                errors.append(
+                    f"{entry.label} generated binding must identify the reported output path"
+                )
 
     missing = sorted(prompt_labels - set(manifest_labels))
     unused = sorted(set(manifest_labels) - prompt_labels)
@@ -237,7 +322,15 @@ def validate_manifest(
     return errors
 
 
-def validate_unit(unit: Unit, asset_root: Path, check_asset_existence: bool) -> list[str]:
+def validate_unit(
+    unit: Unit,
+    asset_root: Path,
+    check_asset_existence: bool,
+    phase: str,
+    through_unit: int | None,
+    unit_numbers: set[int],
+    asset_request_counts: dict[str, int],
+) -> list[str]:
     errors: list[str] = []
     duration_match = REQUEST_DURATION.search(unit.body)
     mode_match = MODE.search(unit.body)
@@ -300,6 +393,11 @@ def validate_unit(unit: Unit, asset_root: Path, check_asset_existence: bool) -> 
                 expected_counts,
                 asset_root,
                 check_asset_existence,
+                phase,
+                through_unit,
+                unit.number,
+                unit_numbers,
+                asset_request_counts,
             )
         )
 
@@ -317,7 +415,11 @@ def validate_unit(unit: Unit, asset_root: Path, check_asset_existence: bool) -> 
 
 
 def validate_document(
-    text: str, asset_root: Path, check_asset_existence: bool = True
+    text: str,
+    asset_root: Path,
+    check_asset_existence: bool = True,
+    phase: str = "final",
+    through_unit: int | None = None,
 ) -> list[str]:
     errors: list[str] = []
     units = parse_units(text)
@@ -343,8 +445,29 @@ def validate_document(
             f"generation unit numbers are {actual_numbers}; expected {expected_numbers}"
         )
 
+    unit_numbers = {unit.number for unit in units}
+    asset_request_counts: dict[str, int] = {}
+    for match in ASSET_REQUEST_DECLARATION.finditer(text):
+        request_id = match.group(1).upper()
+        asset_request_counts[request_id] = asset_request_counts.get(request_id, 0) + 1
+    if phase == "execution":
+        if through_unit is None:
+            errors.append("execution phase requires `--through-unit N`")
+        elif through_unit not in unit_numbers:
+            errors.append(f"execution frontier Unit {through_unit:02d} does not exist")
+    elif through_unit is not None:
+        errors.append("`--through-unit` is valid only with `--phase execution`")
+
     for unit in units:
-        for message in validate_unit(unit, asset_root, check_asset_existence):
+        for message in validate_unit(
+            unit,
+            asset_root,
+            check_asset_existence,
+            phase,
+            through_unit,
+            unit_numbers,
+            asset_request_counts,
+        ):
             errors.append(f"Unit {unit.number:02d}: {message}")
 
     return errors
@@ -363,6 +486,17 @@ def main() -> int:
         action="store_true",
         help="skip filesystem existence checks for synthetic test fixtures only",
     )
+    parser.add_argument(
+        "--phase",
+        choices=("planning", "execution", "final"),
+        default="final",
+        help="validation readiness phase (default: final)",
+    )
+    parser.add_argument(
+        "--through-unit",
+        type=int,
+        help="last unit that must be executable during execution-phase validation",
+    )
     args = parser.parse_args()
 
     try:
@@ -372,7 +506,13 @@ def main() -> int:
         return 2
 
     asset_root = (args.asset_root or args.document.parent).resolve()
-    errors = validate_document(text, asset_root, not args.skip_asset_existence)
+    errors = validate_document(
+        text,
+        asset_root,
+        not args.skip_asset_existence,
+        args.phase,
+        args.through_unit,
+    )
     if errors:
         print(f"FAIL: {args.document}")
         for error in errors:

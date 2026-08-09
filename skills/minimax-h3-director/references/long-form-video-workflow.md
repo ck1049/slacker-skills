@@ -79,7 +79,7 @@ Within a unit:
 
 Carry forward the prior unit's ending state: identity, clothing, held objects, body position, screen direction, location, lighting, weather, damage state, UI values, dialogue state, ambience, and music phase.
 
-When exact visual continuity is important, designate the previous output's final frame as the next unit's first-frame input and select the appropriate supported mode. Do not claim frame continuity unless that frame will actually be supplied.
+When exact visual continuity is important, designate the previous output video or its derived final frame as the next unit's input and select the appropriate supported mode. Before the earlier unit exists, reserve the next unit's official label through `unit://NN/output/video` or `derive://unit-NN/final-frame`, mark the prompt `text_ready` and execution `blocked_until_verified`, and include the label in the prewritten prompt. After generation, resolve the URI to a verified file without rewriting the prompt. Read `deferred-asset-binding.md` for the full contract.
 
 ## 7. Validate before delivery
 

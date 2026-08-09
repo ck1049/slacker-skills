@@ -18,5 +18,7 @@ Expected:
 - Resets Picture, Video, and Audio numbering from 1 for each independent request.
 - Rejects missing, duplicate, unused, non-consecutive, or type-incompatible media bindings.
 - Rejects manifest paths that do not resolve to existing regular files; synthetic fixtures may bypass only this check explicitly.
+- Allows a later unit to reserve `<Video N>`, `<Picture N>`, or `<Audio N>` against a valid earlier producer during planning while keeping execution blocked.
+- Rejects self/future dependencies and unresolved bindings at or before the execution frontier.
 
 Regression failure to reject: one 180-second Ref2VA prompt with `[Shot 2] At 00:15.000` through `[Shot 12] At 02:45.000` inside a single `detailed_description`.
