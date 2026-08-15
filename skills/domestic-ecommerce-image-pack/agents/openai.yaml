@@ -1,0 +1,4 @@
+interface:
+  display_name: "国内电商套图"
+  short_description: "把用户商品参考图转成有卖点场景和文案的国内电商套图"
+  default_prompt: "使用 $domestic-ecommerce-image-pack 根据我上传的商品图生成 4 张有卖点、有背景和中文文案的电商套图试样。"
