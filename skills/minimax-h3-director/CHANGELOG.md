@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.1 — 2026-08-30
+
+- Refreshed the official project-local `h3-prompt-writing` snapshot to MiniMax-H3 commit `d21241f0a4b3acbb34c97dae47fa417b7065e438`.
+- Recorded the official portability declaration and tips for 4–15-second duration matching, label consistency, concrete audiovisual detail, and explicit keyframe timeline connections.
+- Verified that normalized `base-en.txt` and `ref-en.txt` content is unchanged; no H3 prompt schema or validator behavior changed.
+- Documented that the other eight official skills are MiniMax Hub canvas workflows and remain intentionally outside the portable Director runtime.
+
 ## 1.6.0 — 2026-08-09
 
 - Added deferred bindings for earlier unit video/audio outputs, derived final frames, and planned generated references.

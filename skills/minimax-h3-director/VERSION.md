@@ -1,4 +1,4 @@
-# Version 1.6.0
+# Version 1.6.1
 
 V1.0 is a usable, testable prompt-directing skill. It is not a claim that MiniMax publishes a single mandatory prompt grammar. Real video quality still requires generation tests and human evaluation.
 
@@ -15,5 +15,7 @@ V1.4.1 closes the fictional-asset loophole: media labels can be assigned only fr
 V1.5 adds empty-project reference orchestration without coupling the Director to a particular generator. It preserves direct T2VA for simple tasks, distinguishes recommended from required references, emits capability-neutral asset requests, enforces authorization and cost boundaries, and binds only verified outputs.
 
 V1.6 adds deferred asset binding for sequential production. Future prompts can reserve official media labels against typed upstream unit, derived-frame, or asset-request URIs while remaining execution-blocked. Planning, execution-frontier, and final validation keep unresolved dependencies distinct from verified files.
+
+V1.6.1 refreshes official provenance to MiniMax-H3 commit `d21241f0a4b3acbb34c97dae47fa417b7065e438`. The official entry skill added portability metadata and four prompt-quality tips; the two authoritative runtime guides remained content-identical, so H3 field structures, routing, and validation behavior did not change.
 
 Compared with the unavailable V0.1 baseline described in the handoff, this release makes evidence provenance explicit, separates official facts from inferences and community advice, adds validation and regression cases, and provides maintainable templates and update rules.

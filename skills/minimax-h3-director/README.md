@@ -1,4 +1,4 @@
-# MiniMax H3 Director Skill — V1.6
+# MiniMax H3 Director Skill — V1.6.1
 
 An evidence-aware skill for turning briefs, long-form stories, scripts, and reference plans into one or more production-ready MiniMax H3 video prompts and shot plans.
 
