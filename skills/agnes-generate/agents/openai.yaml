@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agnes 图片与视频生成"
+  short_description: "通过固定脚本和外部配置复用 Agnes 图片、视频生成、进度查询与下载"
+  default_prompt: "使用 $agnes-generate，根据提示词和参考素材生成 Agnes 图片或视频，复用脚本并保存任务记录。"

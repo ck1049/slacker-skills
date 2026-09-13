@@ -1,0 +1,12 @@
+{
+  "agnes-video-2.5-flash": {
+    "min_seconds": 4, "max_seconds": 12, "sizes": ["720P"],
+    "max_images": 5, "max_videos": 0,
+    "ratios": ["21:9", "16:9", "4:3", "1:1", "3:4", "9:16"]
+  },
+  "agnes-video-2.5": {
+    "min_seconds": 4, "max_seconds": 12, "sizes": ["720P", "1080P", "1K", "2K"],
+    "max_images": 8, "max_videos": 1,
+    "ratios": ["21:9", "16:9", "4:3", "1:1", "3:4", "9:16"]
+  }
+}
