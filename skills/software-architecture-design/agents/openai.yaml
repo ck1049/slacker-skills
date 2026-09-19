@@ -1,0 +1,4 @@
+interface:
+  display_name: "软件架构设计"
+  short_description: "分轮澄清软件项目需求，形成技术选型、架构、验收及交付方案"
+  default_prompt: "使用 $software-architecture-design 为我的新项目进行前期设计，先主动澄清需求并记录决定，再形成技术选型、架构和开发验收计划。"

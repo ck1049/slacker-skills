@@ -1,6 +1,6 @@
 # slacker-skills
 
-个人维护的 Agent Skills 合集，覆盖数据安全、账单分析、AI 漫剧生产、MiniMax H3、Agnes 图片与视频生成及导演、Tripo 3D 资产工作流。
+个人维护的 Agent Skills 合集，覆盖软件架构初期设计、数据安全、账单分析、AI 漫剧生产、MiniMax H3、Agnes 图片与视频生成及导演、Tripo 3D 资产工作流。
 
 每个技能位于 `skills/<skill-name>/`，以 `SKILL.md` 作为入口，并可附带脚本、参考规范和 Agent 配置。仓库可通过 `skills` CLI 安装到支持 Agent Skills 的工具中。
 
@@ -35,6 +35,7 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 | [agnes-video-director](skills/agnes-video-director/SKILL.md) | 为 Agnes Video 2.5 Flash / 2.5 编写中文视频提示词，处理角色参考、首尾帧、镜头节奏与成片检查 | 官方约束摘要与参考示例；真实生成需 Agnes 服务，收费操作需授权 |
 | [agnes-generate](skills/agnes-generate/SKILL.md) | 通过固定脚本与外部 JSON/CLI 参数执行 Agnes 图片和视频生成、多图参考、首尾帧、任务续查及下载 | Python 3.10+、Pillow；视频检查另需 opencv-python；密钥从环境变量读取 |
 | [`tripo-3d-pipeline`](skills/tripo-3d-pipeline/SKILL.md) | 规划并执行 Tripo 3D 生成、纹理、拓扑、分割、绑定、动画、转换和归档 | Tripo CLI；付费任务必须先核价并获得明确批准 |
+| [`software-architecture-design`](skills/software-architecture-design/SKILL.md) | 主动分轮澄清软件项目需求，形成技术选型、架构、验收与发布方案，并提示可复用规范更新 | 技术栈中立；默认仅设计，实施、收费与发布沿用明确授权 |
 
 ## 快速使用
 
