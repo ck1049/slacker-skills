@@ -1,6 +1,6 @@
 # slacker-skills
 
-个人维护的 Agent Skills 合集，覆盖软件架构初期设计、数据安全、账单分析、AI 漫剧生产、MiniMax H3、Agnes 图片与视频生成及导演、Tripo 3D 资产工作流。
+个人维护的 Agent Skills 合集，覆盖软件架构初期设计、分语言与领域代码质量、数据安全、账单分析、AI 漫剧生产、MiniMax H3、Agnes 图片与视频生成及导演、Tripo 3D 资产工作流。
 
 每个技能位于 `skills/<skill-name>/`，以 `SKILL.md` 作为入口，并可附带脚本、参考规范和 Agent 配置。仓库可通过 `skills` CLI 安装到支持 Agent Skills 的工具中。
 
@@ -38,6 +38,31 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 | [`software-architecture-design`](skills/software-architecture-design/SKILL.md) | 主动分轮澄清软件项目需求，形成技术选型、架构、验收与发布方案，并提示可复用规范更新 | 技术栈中立；默认仅设计，实施、收费与发布沿用明确授权 |
 
 ## 快速使用
+
+### 通用代码质量技能
+
+以下技能可分别安装和使用，没有相互强制依赖，也不要求某个项目布局、操作系统、作者身份或框架。每次使用先识别宿主项目规则、版本和工具，再应用对应领域的检查；已有明确约定优先，缺失工具与未验环境会如实报告。安装 Skill 不会自动配置 formatter、Git 钩子或远端 CI，也不能保证未经验证即适配所有项目。
+
+| 技能 ID | 适用范围 | 关键内容 |
+| --- | --- | --- |
+| [java-code-quality](skills/java-code-quality/SKILL.md) | Java 库、服务、工具 | 注解位置区别、可读格式、职责、明确类型与资源管理 |
+| [typescript-code-quality](skills/typescript-code-quality/SKILL.md) | 浏览器、服务端、工具 TypeScript | 类型与运行时验证、异步控制流、模块边界 |
+| [frontend-interaction-quality](skills/frontend-interaction-quality/SKILL.md) | Web 前端交互 | 草稿、导航、身份隔离、在途状态、可访问性和视口验收 |
+| [backend-api-quality](skills/backend-api-quality/SKILL.md) | 后端服务接口 | 契约、集中错误映射、事务、权限、幂等与未知结果 |
+| [database-change-quality](skills/database-change-quality/SKILL.md) | 关系数据库 | 注释就近、真实方言验证、迁移与数据恢复 |
+| [python-maintenance-quality](skills/python-maintenance-quality/SKILL.md) | Python 工具与维护脚本 | 类型边界、子进程、路径、失败处理和恢复 |
+| [game-code-quality](skills/game-code-quality/SKILL.md) | 游戏运行时 | 生命周期、场景切换、资源引用、存档与实测性能 |
+| [code-review-feedback](skills/code-review-feedback/SKILL.md) | 跨语言变更审查 | 证据分级、范围内修复、复测复查和实际版本对应 |
+
+同一任务按需组合语言和领域技能，例如 Java + 后端接口 + 数据库；不要对每次修改都加载全部技能。游戏技能按实际引擎核对资料，不把 Web 项目经验直接当成游戏引擎运行证据。需要项目初期设计时使用已有的 `software-architecture-design`；本组技能负责实现与审查，不替代需求决策。
+
+```text
+使用 java-code-quality 添加这个方法，保持现有 Gradle、JPA 与格式配置，不重排旧代码。
+使用 frontend-interaction-quality 修复切页后上传状态提前清零，保留当前 Vue 和 Biome 配置。
+使用 code-review-feedback 审查暂存变更，只报告有证据的问题，暂不修改代码。
+```
+
+### 其他工作流
 
 安装后可以直接用自然语言描述任务，也可以明确指定技能 ID：
 

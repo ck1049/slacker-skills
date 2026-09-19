@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端交互质量"
+  short_description: "适配现有框架，验证导航、草稿、账户边界、异步操作及响应式交互"
+  default_prompt: "使用 $frontend-interaction-quality 改善当前前端交互，并验证状态保留、异步边界和可访问性。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "TypeScript 代码质量"
+  short_description: "适配现有工具，落实类型边界、异步控制流、模块职责和质量检查"
+  default_prompt: "使用 $typescript-code-quality 检查当前 TypeScript 改动，遵循项目规范并修复范围内的问题。"
