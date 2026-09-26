@@ -8,7 +8,7 @@
 
 模型限制存在video-profiles.json；普通参数从任务配置传入。未知model不做专属范围验证，不能因此宣称官方支持。
 
-2026-09-13的两个Flash实测任务返回顶层url，文档亦说明metadata.url，下载器兼容两者。三图PNG Data URI与四图JPEG Data URI均已成功完成视频生成；这是reference.images的实测兼容性，官方视频页仍写URL。图像接口官方明确支持Data URI。
+2026-09-25核验：上方链接的Flash官方文档现已明确完成结果使用顶层url，状态使用status/progress；internal_status/internal_progress可能仍为pending/0，不用于完成判断。标准版文档仍示例metadata.url，现有下载器兼容两者，无需修改客户端。2026-09-13的两个Flash实测任务也曾返回顶层url。三图PNG Data URI与四图JPEG Data URI均已成功完成视频生成；这是reference.images的实测兼容性，官方视频页仍写URL。图像接口官方明确支持Data URI。
 
 大图请求曾在上传阶段超时，按比例缩小/JPEG传输后成功。通用客户端把这些选项外置，不改原图。提交失败不自动重提，查询中断恢复同一ID。
 

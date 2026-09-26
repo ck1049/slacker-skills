@@ -18,7 +18,7 @@
 - `POST https://apihub.agnes-ai.com/v1/videos` 创建任务；保存 `video_id`。查询使用根路径 `/agnesapi`，携带 `video_id` 和对应的 `model_name`。
 - `text` 不带素材；`keyframe` 使用 `first_frame` / `last_frame`，至少一个；`reference` 使用 `images` / `audios` 等数组，不混入首尾帧字段。标准版的 `videos` 不能直接照搬给 Flash。
 - 素材必须能被服务端访问。提示词里的 `<Picture N>`、`<Audio N>` 按各数组从 1 独立编号。本地路径不等于可访问 URL；仅给提示词不需要公开上传。
-- 完成以 `status=completed` 与 `metadata.url` 为准。详细尺寸、媒体大小、请求示例和标准版费用使用原文，不在此维护第二套完整表格。
+- 完成以 `status=completed` 为准。2026-09-25 核验 Flash 官方文档已明确从顶层 `url` 获取成片；标准版文档仍示例 `metadata.url`。Flash 的 `internal_status` / `internal_progress` 可能仍为 pending / 0，应使用 `status` / `progress`，不能因此重复提交。详细尺寸、媒体大小、请求示例和标准版费用使用原文，不在此维护第二套完整表格。
 
 ## 本地工作流建议
 
