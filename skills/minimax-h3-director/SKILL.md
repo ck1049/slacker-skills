@@ -16,6 +16,8 @@ The bundled official guides are authoritative for final field names, section ord
 
 ## Workflow
 
+Before formal production or delivering executable prompts, read `references/official-maintenance.md`. Recheck official sources when the last complete successful check is missing, incomplete, or older than 24 hours; report freshness separately from prompt validation.
+
 1. Determine the requested total runtime before writing any H3 prompt. If the target exceeds 15 seconds, or the source contains more story beats than one 15-second clip can execute clearly, read `references/long-form-video-workflow.md` completely and plan multiple H3 generation units.
 2. Extract subject identity, setting, story beats, time, action, camera, lighting, audio, dialogue, constraints, and desired output. Adapt prose into observable audiovisual beats; do not map prose paragraphs directly to shots.
 3. Before selecting modes, assess reference necessity. Read `references/reference-asset-orchestration.md` completely when the project has no verified media, the task spans multiple generation units, or identity/scene/prop/UI/voice continuity matters. Choose exactly one project-level decision: `T2VA_DIRECT`, `REFERENCE_RECOMMENDED`, or `REFERENCE_REQUIRED`. Do not recommend references merely because generation capability exists.

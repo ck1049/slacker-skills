@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.2 — 2026-09-28
+
+- Added a production-time official freshness check with a 24-hour threshold, separate source and adaptation status, and explicit unavailable-source handling.
+- Defined evidence-based daily maintenance, platform-specific compatibility, and offline validation boundaries without changing existing H3 prompt schemas.
+
 ## 1.6.1 — 2026-08-30
 
 - Refreshed the official project-local `h3-prompt-writing` snapshot to MiniMax-H3 commit `d21241f0a4b3acbb34c97dae47fa417b7065e438`.
