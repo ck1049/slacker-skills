@@ -26,4 +26,6 @@ The official repository now lists one portable `h3-prompt-writing` skill plus ei
 
 ## Source maintenance
 
+Platform handoff sources checked 2026-09-29: [MiniMax V2 create reference](https://platform.minimax.io/docs/api-reference/video-generation-v2-create), [model releases](https://platform.minimax.io/docs/release-notes/models), [API releases](https://platform.minimax.io/docs/release-notes/apis), and [ComfyUI native workflows](https://docs.comfy.org/tutorials/video/minimax/minimax-h3-native). The last is authoritative only for ComfyUI integration. O-02 now redirects to `platform.minimax.cn/docs/guides/video-prompt`, a feature-example page; follow its video-generation link for specifications. See `references/platform-handoff.md` for scoped checks.
+
 On each update, record URL, access date, changed section, exact claim, evidence class, and impact in `CHANGELOG.md`. Do not silently promote community advice to official status.

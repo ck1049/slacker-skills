@@ -1,6 +1,7 @@
 # V1.6 validation checklist
 
 - Mode is explicit or assumption is visible.
+- Model and target platform are explicit before executable handoff. Apply `platform-handoff.md`; report platform preflight separately from the segment validator, which does not inspect API requests or ComfyUI runtime compatibility.
 - Reference decision is exactly one of `T2VA_DIRECT`, `REFERENCE_RECOMMENDED`, or `REFERENCE_REQUIRED`.
 - A blank project does not automatically trigger asset generation; a direct T2VA rationale is accepted for simple tasks.
 - Every asset request declares a capability rather than a fixed skill, vendor, model, or platform.

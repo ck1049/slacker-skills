@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.3 — 2026-09-29
+
+- Added platform handoff checks for hosted H3/H3 Max constraints and native ComfyUI timing, without changing the bundled rewrite grammar or default model.
+- Sources: MiniMax generation guide and V2 create reference; ComfyUI native H3 workflow documentation (linked in `references/platform-handoff.md`). Classification: coverage improvement against current official evidence; no claim that these limits were newly introduced today.
+- Verified upstream remains at `d21241f0a4b3acbb34c97dae47fa417b7065e438`; normalized skill entrypoint and both official guides are unchanged.
+
 ## 1.6.2 — 2026-09-28
 
 - Added a production-time official freshness check with a 24-hour threshold, separate source and adaptation status, and explicit unavailable-source handling.
