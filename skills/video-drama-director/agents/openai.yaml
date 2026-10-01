@@ -1,0 +1,7 @@
+interface:
+  display_name: "剧情视频导演"
+  short_description: "跨模型设计剧情、多人场面与情绪表演，并检查道具连续性和视听节奏"
+  default_prompt: "使用 $video-drama-director 将我的故事改编成有场面调度、情绪变化和状态连续性的镜头组，再生成适配所选模型的提示词。"
+
+policy:
+  allow_implicit_invocation: true
