@@ -1,0 +1,7 @@
+interface:
+  display_name: "原创网文小说家"
+  short_description: "规划多题材原创小说，交织主支线，维护伏笔与连续性，逐章审改定稿"
+  default_prompt: "使用 $web-novel-writer 创作原创小说，先完成世界观、人物和因果大纲，再撰写有主支线交织、细腻细节与公平伏笔的正文，并逐章评审和维护连续性笔记。"
+
+policy:
+  allow_implicit_invocation: true

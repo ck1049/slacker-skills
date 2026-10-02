@@ -1,6 +1,6 @@
 # slacker-skills
 
-个人维护的 Agent Skills 合集，覆盖软件架构初期设计、分语言与领域代码质量、数据安全、账单分析、AI 漫剧生产、MiniMax H3、Agnes 图片与视频生成及导演、Tripo 3D 资产工作流。
+个人维护的 Agent Skills 合集，覆盖软件架构初期设计、分语言与领域代码质量、数据安全、账单分析、原创网文小说、AI 漫剧生产、MiniMax H3、Agnes 图片与视频生成及导演、Tripo 3D 资产工作流。
 
 每个技能位于 `skills/<skill-name>/`，以 `SKILL.md` 作为入口，并可附带脚本、参考规范和 Agent 配置。仓库可通过 `skills` CLI 安装到支持 Agent Skills 的工具中。
 
@@ -31,6 +31,7 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 | [`alipay-mihoyo-analysis`](skills/alipay-mihoyo-analysis/SKILL.md) | 从支付宝账单 PDF 提取米哈游交易，区分《原神》和《崩坏：星穹铁道》，生成 Excel 报告 | Python、`pdfplumber`、`openpyxl`；仅支持未加密的文本型 PDF |
 | [`jimeng-agent-workflow`](skills/jimeng-agent-workflow/SKILL.md) | 驱动即梦 Agent 完成漫剧需求、质量评估、角色/场景图、视频生成和进度监控 | `agent-browser` v0.23+、即梦账号，并配合漫剧脚手架 |
 | [`manju-project-scaffold`](skills/manju-project-scaffold/SKILL.md) | 创建和维护长篇漫剧工程，组织季度、剧集、全局素材及 Seedance 2.0/2.5 规范 | Python 3；自带目录脚手架脚本 |
+| [`web-novel-writer`](skills/web-novel-writer/SKILL.md) | 多题材原创网文：先冻结世界观、人物与因果大纲，再写多线章节，维护连续性/伏笔并逐章审改 | 无必装运行依赖；参考只提炼技法，不复制剧情；编辑验收不保证商业成绩 |
 | [`video-drama-director`](skills/video-drama-director/SKILL.md) | 跨模型编排剧情、表演及武侠/仙侠/现代动作，按角色与器械设计招式、特效展开、声音和摄影，并检查状态连续性 | Python 3.10+ 可选计划检查器；配合所选模型导演技能，生成与收费沿用用户授权 |
 | [`minimax-h3-director`](skills/minimax-h3-director/SKILL.md) | 将创意、剧本和多模态参考转成 MiniMax H3 的 T2VA、I2VA、FL2VA、L2VA 或 Ref2VA 分镜与官方格式提示词 | 自包含官方格式指南；真实成片仍需 MiniMax H3 服务或应用 |
 | [agnes-video-director](skills/agnes-video-director/SKILL.md) | 为 Agnes Video 2.5 Flash / 2.5 编写中文视频提示词，处理角色参考、首尾帧、镜头节奏与成片检查 | 官方约束摘要与参考示例；真实生成需 Agnes 服务，收费操作需授权 |
@@ -71,13 +72,20 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 使用 slacker-data-security 评审这个服务的敏感字段加密方案。
 使用 alipay-mihoyo-analysis 分析这个目录中的支付宝账单 PDF，并生成 Excel 报告。
 使用 manju-project-scaffold 为《项目名》创建第一季漫剧工程。
+使用 web-novel-writer 为 16—35 岁男性读者创作第一部原创网文，题材和书名自主，先完成规划与冻结，再写开篇并逐章评审。
 使用 video-drama-director 把这部长篇剧情设计成有多人互动、情绪变化和状态连续性的镜头组，再按所选模型编写提示词。
 使用 minimax-h3-director 把这段 15 秒动漫剧情整理成可直接提交给 MiniMax H3 的 T2VA 提示词。
 使用 agnes-generate 根据任务 JSON 和参考图生成图片或视频，复用固定脚本并保存任务记录。
 使用 tripo-3d-pipeline 评估把这张角色图做成 Unity 可用 GLB 的成本，先不要消耗积分。
 ```
 
-## 随附脚本
+## 随附工作流与脚本
+
+### 原创网文小说写作
+
+[`web-novel-writer`](skills/web-novel-writer/SKILL.md) 覆盖男频、女频、武侠、玄幻、修真、都市、悬疑、科幻、历史、言情、轻喜剧及混合题材。准备世界规则、人物弧线、全书因果大纲与主要谜题答案，冻结核心后进入正文；每章围绕主推进交织关系、生活或支线，维护人物认知、物件状态和伏笔兑现。
+
+随附[参考指南](skills/web-novel-writer/references/quality-review.md)、[故事工程](skills/web-novel-writer/templates/story-bible.md)、[章节卡](skills/web-novel-writer/templates/chapter-card.md)、[连续性台账](skills/web-novel-writer/templates/continuity-ledger.md)、[章评](skills/web-novel-writer/templates/chapter-review.md)及[新工程布局](skills/web-novel-writer/templates/project-layout.md)。词库按情境使用，避免形容词拼贴；质量验收先查阻断项，再改因果、人物、节奏与语言。纯文档流程，无需安装脚本或调用外部生成 API。
 
 ### 支付宝米哈游账单分析
 
