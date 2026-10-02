@@ -11,7 +11,7 @@
 | [Oklahoma State大学连续性剪辑](https://open.library.okstate.edu/introfilmtv/part/editing/) | 镜头关系、空间连续、视线/动作匹配，故意打破需有表达理由 | 基本剪辑语言，没有统一镜头配比 |
 | [Oklahoma State大学声音章节](https://open.library.okstate.edu/introfilmtv/part/sound/) | 区分现场/主观/配乐，注意画内外、同步与声音透视；声音参与叙事 | 声音概念教育，不保证模型原生声音表现 |
 
-本 skill 的状态账本、80分设计起点、代表性小样和重复警报为项目方法；按项目使用，不是来自上述来源的固定标准。新增规则标清官方、教育原则、项目推断或实测，并写适用条件。
+本 skill 的状态账本、设计评分、代表性小样和重复警报为项目方法；按项目使用，不是来自上述来源的固定标准。设计分不能替代实际核心条件验收。新增规则标清官方、教育原则、项目推断或实测，并写适用条件。
 
 ## 战斗分支补充来源
 
@@ -24,3 +24,19 @@
 | [国际武联套路规则：第27条剑枪等自选项目要求](https://www.iwuf.org/wp-content/uploads/2018/12/Rules_of_Taolu-English.pdf) | 剑、枪均有多样的动作技术和不同器械要求，可核对动作词的含义 | 历史发布版本的竞技套路资料，不用于声称当前竞赛标准、实战有效性或所有角色固定打法 |
 | [《尚气》总视效监督Christopher Townsend访谈](https://www.artofvfx.com/shang-chi-and-the-legend-of-the-ten-rings-christopher-townsend-overall-vfx-supervisor/) | 特效随动作展开、与人物交互并产生后果；生物结构与表演影响重量、速度和尺度；特效不吞没角色 | 参与者的制作经验；本技能的属性推导与效果阶段是自建方法，不是该访谈公布的AI公式 |
 | [《沙丘》重录混音师Ron Bartlett与Doug Hemphill等访谈](https://www.asoundeffect.com/dune-film-sound/) | 声音选择、删减、动态/密度对比及空间运动服务规模与主观体验 | 电影混音经验，不保证视频模型能精确控制声场、生成分轨或达到影院交付规格 |
+
+## 实片失败后补充：外观、速度与预演
+
+核验日期：2026-10-02。来源提供制作选择，技能里的检查条件与提示改写是项目推导。选择与本次缺口相关的条目读取，不每条提示词重复浏览全表。
+
+| 一手来源 | 可采用的具体经验 | 本次证据范围 |
+|---|---|---|
+| [Outpost：《降世神通》御气/御土制作](https://outpost-vfx.com/en/work/avatar-the-last-airbender/) | 御气寻找可观察的介质表现；土块有压实、出土、飞行和局部崩解的材质区别，作用改变竞技场 | 制作方文字及选定静帧；不声称已完整观看视频 |
+| [MOREVFX：《刺杀小说家2》赤发鬼拆解](https://www.gcores.com/articles/207918) | 发束从试探到挥扫/收紧，根梢传导、张力和目标受力可表达意图 | 制作方署名文章与网页GIF的选定画面；不把完整动态质量视为已审 |
+| [Wētā FX：《尚气》官方分解](https://www.youtube.com/watch?v=IUvO8EammNc)及[制作说明](https://www.wetafx.co.nz/articles/shang-chi-and-the-legend-of-the-ten-rings) | 有体量的生物、交互水体、器物和发光/流痕相互配合，不只缩放一个平面圈 | 文字、官网静帧与分解视频约0:30/0:45/1:00选定画面；未听审 |
+| [Wētā Workshop：《长城》](https://www.wetaworkshop.com/projects/the-great-wall)与[《花木兰》](https://www.wetaworkshop.com/projects/mulan) | 服装/甲胄活动性、武器持握佩挂、材料工艺与镜头用途共同设计 | 制作方文字；《长城》部分网页画面。设计工艺不能直接当生成参数 |
+| [Animation Mentor：Timing and Spacing](https://www.animationmentor.com/blog/tutorial-animate-with-timing-and-spacing-in-mind/)与[Anticipation](https://www.animationmentor.com/blog/anticipation-the-12-basic-principles-of-animation/) | 姿态时序与间距形成速度、重量和节奏；准备与释放相关，但并非每次大蓄力 | 官方教学文字；本技能使用相对节拍，不声称视频模型有逐帧控制 |
+| [Gareth Evans谈《突袭2》编排](https://www.mandatory.com/fun/666227-exclusive-interview-gareth-evans-on-the-raid-2) | 先有处境、目的与约束，再编动作；摄影和剪辑进入预演 | 创作者访谈文字；不把某套武术当全部题材范式 |
+| [Runway图生视频提示指南](https://help.runwayml.com/hc/en-us/articles/48324313115155-Image-to-Video-Prompting-Guide) | 参考中的姿势/方向线索与文本共同影响运动设计；动作序列与时长需要匹配 | 仅适用文档所述执行面；不据此断言H3必然把一个动作摊满长时长 |
+
+研究记录要区分已看画面、文字依据和自己的设计推导。静帧、来源清单、逐秒描述均不能代替实际小样的动态与听觉验收。
