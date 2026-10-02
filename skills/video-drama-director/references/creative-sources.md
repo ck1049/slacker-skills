@@ -12,3 +12,13 @@
 | [Oklahoma State大学声音章节](https://open.library.okstate.edu/introfilmtv/part/sound/) | 区分现场/主观/配乐，注意画内外、同步与声音透视；声音参与叙事 | 声音概念教育，不保证模型原生声音表现 |
 
 本 skill 的状态账本、80分设计起点、代表性小样和重复警报为项目方法；按项目使用，不是来自上述来源的固定标准。新增规则标清官方、教育原则、项目推断或实测，并写适用条件。
+
+## 战斗分支补充来源
+
+核验日期：2026-10-02。以下支持电影/兵器动作的组织方法；本技能的高武力量规则、动作链与审片条件属于结合项目失败提出的导演方法，不是这些资料对AI生成的保证。
+
+| 来源 | 支持的原则 | 范围 |
+|---|---|---|
+| [Film Independent：动作指导Darrin Prescott访谈](https://www.filmindependent.org/blog/bonus-stunt-coordinator-darrin-prescott-dissects-john-wicks-best-action-scenes/) | 摄影机位置与动作编排共同设计；具有角色/情境理由的动作比孤立招式更有意义 | 参与者的电影制作经验，不把具体招数或拍法变为统一配方 |
+| [ASC：《卧虎藏龙》摄影制作访谈](https://theasc.com/article/crouching-tiger-hidden-dragon-cinematography/) | 相对自然舒适的写实视觉与武侠超常动作可以共存；场地、摄影和叙事共同塑造段落 | 摄影师的制作说明，不等于当前模型可复制该效果 |
+| [国际武联套路规则：第27条剑枪等自选项目要求](https://www.iwuf.org/wp-content/uploads/2018/12/Rules_of_Taolu-English.pdf) | 剑、枪均有多样的动作技术和不同器械要求，可核对动作词的含义 | 历史发布版本的竞技套路资料，不用于声称当前竞赛标准、实战有效性或所有角色固定打法 |
