@@ -22,3 +22,5 @@
 | [Film Independent：动作指导Darrin Prescott访谈](https://www.filmindependent.org/blog/bonus-stunt-coordinator-darrin-prescott-dissects-john-wicks-best-action-scenes/) | 摄影机位置与动作编排共同设计；具有角色/情境理由的动作比孤立招式更有意义 | 参与者的电影制作经验，不把具体招数或拍法变为统一配方 |
 | [ASC：《卧虎藏龙》摄影制作访谈](https://theasc.com/article/crouching-tiger-hidden-dragon-cinematography/) | 相对自然舒适的写实视觉与武侠超常动作可以共存；场地、摄影和叙事共同塑造段落 | 摄影师的制作说明，不等于当前模型可复制该效果 |
 | [国际武联套路规则：第27条剑枪等自选项目要求](https://www.iwuf.org/wp-content/uploads/2018/12/Rules_of_Taolu-English.pdf) | 剑、枪均有多样的动作技术和不同器械要求，可核对动作词的含义 | 历史发布版本的竞技套路资料，不用于声称当前竞赛标准、实战有效性或所有角色固定打法 |
+| [《尚气》总视效监督Christopher Townsend访谈](https://www.artofvfx.com/shang-chi-and-the-legend-of-the-ten-rings-christopher-townsend-overall-vfx-supervisor/) | 特效随动作展开、与人物交互并产生后果；生物结构与表演影响重量、速度和尺度；特效不吞没角色 | 参与者的制作经验；本技能的属性推导与效果阶段是自建方法，不是该访谈公布的AI公式 |
+| [《沙丘》重录混音师Ron Bartlett与Doug Hemphill等访谈](https://www.asoundeffect.com/dune-film-sound/) | 声音选择、删减、动态/密度对比及空间运动服务规模与主观体验 | 电影混音经验，不保证视频模型能精确控制声场、生成分轨或达到影院交付规格 |
