@@ -87,6 +87,8 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 
 随附[参考指南](skills/web-novel-writer/references/quality-review.md)、[故事工程](skills/web-novel-writer/templates/story-bible.md)、[章节卡](skills/web-novel-writer/templates/chapter-card.md)、[连续性台账](skills/web-novel-writer/templates/continuity-ledger.md)、[章评](skills/web-novel-writer/templates/chapter-review.md)及[新工程布局](skills/web-novel-writer/templates/project-layout.md)。词库按情境使用，避免形容词拼贴；质量验收先查阻断项，再改因果、人物、节奏与语言。纯文档流程，无需安装脚本或调用外部生成 API。
 
+针对没有文学经验的作者，还提供[人物与长篇续航](skills/web-novel-writer/references/characters-and-longform.md)、[资料核查与阅读体验](skills/web-novel-writer/references/research-and-reader-experience.md)和[稿件流程与稳定维护](skills/web-novel-writer/references/workflow-and-maintenance.md)：覆盖成长回报、情绪变化、开篇信息负荷、专业事实、版本/备份恢复和副业节奏。按任务读取，不每章机械填完全部表；作品特例留在作品工程，减少通用 skill 的频繁改动。版本变化见 [CHANGELOG](skills/web-novel-writer/CHANGELOG.md)。
+
 ### 支付宝米哈游账单分析
 
 ```bash

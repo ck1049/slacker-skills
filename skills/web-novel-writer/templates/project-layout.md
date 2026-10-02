@@ -12,10 +12,12 @@
     outline.md               # 全书因果、卷/支线、关键真相与结局
     chapter-cards.md         # 已细化的章卡及下一章入口
     style-and-references.md  # 自有文风、参考技法、不复制内容
+    research-log.md          # 影响因果的事实、来源/架空/待核
   continuity/
     state.md                 # 当前人物、时间、物件、知识与关系
     clues.md                 # 作者答案、读者证据、兑现计划/实际进展
     handoff.md               # 最近定稿摘要、续写必须继承的事实
+  manuscript-control.md     # 当前版本、章状态、备份与恢复验证
   manuscript/
     001-章节名.md
   reviews/
