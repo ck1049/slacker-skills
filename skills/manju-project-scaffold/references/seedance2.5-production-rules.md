@@ -10,6 +10,19 @@ Use these rules by default for 即梦 Seedance 2.5 漫剧 production. Keep the 2
 - Character, multi-person, and multi-panel guidance
 - Clip continuity and validation checklist
 
+## Official Sources and Execution Channel
+
+Checked on 2026-10-03:
+
+- [Seedance 2.5 official manual](https://bytedance.larkoffice.com/wiki/RXh5ww6EqighMdkVTMccm2d4n7e), revision `8846`: the platform limits and creative templates below.
+- [Official Canvas CLI guide](https://bytedance.larkoffice.com/wiki/QO66wGahSiakEHkJbxIcNBtDnAc), revision `296`, video generation and unsupported-model FAQ: current CLI mode mapping and live model discovery.
+
+Distinguish the manual's platform capabilities from capabilities exposed by the selected execution channel. For `dreamina-canvas`, query the installed release's `schema` and `model list --type video` before preparing executable parameters. Use the returned canonical model and that mode's supported duration, ratio, resolution, reference types and counts; missing fields are not evidence of support. Record the query date and CLI version in production notes. Do not copy model names or flags from an older CLI or another account/environment.
+
+The official CLI guide currently lists `t2v` (text), `m2v` (multimodal references, including image inputs), and `first_last_frame` (first/last frames); it has no `i2v` mode. A reference video in `m2v` is not an explicit extension operation. Do not assume that the CLI exposes the manual's 30-180s super-long mode, video extension, editing, or seamless transition. If the selected channel does not explicitly expose the requested capability, retain the creative plan but mark execution as unverified or unavailable according to the evidence; report that boundary and obtain the user's choice before changing duration, mode, or model.
+
+Keep the readable `@图片N` / `@视频N` / `@音频N` labels in creative storyboards. For executable CLI handoff, use the installed official `dreamina-canvas-cli` skill's identity/reference protocol: map actual queried media nodes to `--ref node:<node-id>` and, when binding an object at a specific position in the prompt, `{{node:<node-id>}}`. Handwritten `@名称` alone does not establish a CLI node reference. Preserve each material's declared purpose and the semantic first/last-frame order.
+
 ## Mode Selection
 
 - **全能参考**: generate a standard 4-30s clip from text plus image/video/audio references; audio-only input is supported.
@@ -17,13 +30,14 @@ Use these rules by default for 即梦 Seedance 2.5 漫剧 production. Keep the 2
 - **智能编辑 / 高级编辑 / 视频编辑**: change, remove, or add local elements while preserving the rest of an existing video. For precise work, include the marked region and timestamp.
 - **视频延长**: extend a source video whose duration is no longer than 30s. Each extension adds 4-30s and affects only the added segment. Repeated extension is allowed while the newest source remains no longer than 30s; the maximum final result is 60s.
 - **超长视频**: generate one continuous 30-180s video. Use an explicit timecoded script and reserve this mode for sequences whose continuity benefits from one generation.
+- **视频无缝转场**: input two independent video clips and let the model generate only the transition gap between them. Preserve both original clips; use a clear transition intention such as focus transition, rotating costume transition, dive transition, action-triggered transition, gaze-led transition, or occlusion transition. This bridges two existing clips; it is not video continuation and must not regenerate or replace either source clip.
 
 ## Platform Limits
 
 ### Standard output
 
 - Duration: 4-30 seconds (`97-721` frames; `-1` may be available for automatic duration).
-- Resolution: 480p or 720p.
+- Resolution: 480p or 720p in the manual's parameter table. For actual CLI execution, use only resolutions returned for the selected model/mode; do not infer additional resolutions or bit depth from a different channel.
 
 ### Input images
 
@@ -36,13 +50,13 @@ Use these rules by default for 即梦 Seedance 2.5 漫剧 production. Keep the 2
 ### Input videos
 
 - Up to 10 videos; combined video duration <= 30s (practical boundary may accept approximately 30.2s).
-- Each video: 2-30s; mp4 or mov; 480p-4K; 24-60 FPS; <= 200MB.
+- Each video: nominally 2-30s (the manual gives a practical validation interval of 1.8-30.2s); mp4 or mov; 480p-4K; 24-60 FPS; <= 200MB. Plan within 2-30s rather than treating validation tolerance as a larger production budget.
 - Aspect ratio: 0.4-2.5; width/height: 300-6000px; total pixels: 409600-8295044.
 
 ### Input audio
 
 - Up to 10 audio files; combined audio duration <= 30s (practical boundary may accept approximately 30.2s).
-- Each audio file: 2-30s; wav or mp3; <= 15MB.
+- Each audio file: nominally 2-30s (practical validation interval 1.8-30.2s); wav or mp3; <= 15MB. Plan within 2-30s.
 - Audio-only reference input is supported in 2.5.
 
 ## Recommended Stable Ranges
@@ -62,8 +76,10 @@ Every production prompt should follow:
 
 1. **素材描述**: map upload order to purpose. Example: `@图片1是角色面貌与服装参考；@视频1只参考动作节奏；@音频1只参考音色。`
 2. **一句话概述**: subject + location + event + genre/style + special camera language.
-3. **具体情节**: write by timestamp or story beat. Each segment should contain visual content + camera + action + dialogue + sound effects + local negative requirements.
+3. **具体情节**: write by timestamp or story beat. Each segment should contain visual content + camera + action + dialogue + sound effects + local negative requirements. After the physical instructions, add the intended emotion, dramatic meaning, or camera-directing subtext so the model understands why the action is staged that way.
 4. **全局补充**: repeat continuity anchors, atmosphere, lighting, sound policy, and whole-video negative requirements.
+
+For critical identity, composition, white-model, voice, or movement constraints, reference the relevant `@图片N` / `@视频N` / `@音频N` again inside the applicable time segment. Do not rely only on the opening material map; repeated, purposeful references can improve adherence. Keep each repeated reference's purpose consistent.
 
 ### Standard clip template
 
@@ -78,8 +94,8 @@ Every production prompt should follow:
 [主体]在[地点]完成[事件]，[题材/风格]，[特殊运镜]。
 
 【时间轴】
-0s-Xs：[画面与构图]；[人物动作/表情]；[景别、机位、运镜]；[台词]；[环境音/音效]；[本段禁止项]。
-Xs-Ys：[画面与构图]；[人物动作/表情]；[景别、机位、运镜]；[台词]；[环境音/音效]；[本段禁止项]。
+0s-Xs：[画面与构图，可再次@关键素材]；[人物动作/表情]；[景别、机位、运镜]；[台词]；[环境音/音效]；[情感解析/导演意图/镜头潜台词]；[本段禁止项]。
+Xs-Ys：[画面与构图，可再次@关键素材]；[人物动作/表情]；[景别、机位、运镜]；[台词]；[环境音/音效]；[情感解析/导演意图/镜头潜台词]；[本段禁止项]。
 
 【全局补充】
 全程保持[面孔/服装/体型/道具/空间方向]一致；[光影、色彩、氛围与声音要求]；不要字幕，不要Logo，不要无关BGM，不新增无关角色或物体。
@@ -111,6 +127,15 @@ Xs-Ys：[画面与构图]；[人物动作/表情]；[景别、机位、运镜]�
 修改在全片/指定时间段保持一致；除标记对象外，严格保留原视频的构图、人物、动作、镜头、光线、字幕和声音。
 ```
 
+### Seamless video transition template
+
+```text
+输入视频A和视频B。保持两段原视频完整不变，仅补全两段之间的过渡间隙。
+转场方式：[焦点转场/旋转变装/俯冲转场/动作触发/视线牵引/遮挡转场]。
+补全要求：使用视频A末帧的动作、视线、物体或遮挡触发过渡，自然对齐视频B首帧的构图、运动方向和光线。
+禁止：不重新生成、修改或重排任一段原视频；不添加无关人物、字幕、Logo或无关BGM。
+```
+
 ## Character Realism and Multi-person Consistency
 
 For a realistic character anchor, specify:
@@ -139,10 +164,13 @@ For multiple people, assign one reference label and one appearance block per cha
 ## Validation Checklist
 
 - Mode and duration are compatible.
+- The selected execution channel explicitly exposes the requested mode; CLI model, resolution, duration and reference parameters have live discovery evidence rather than only a platform-manual citation.
 - Material counts, durations, formats, and sizes remain within limits.
 - Every `@素材N` label has one explicit purpose; conflicting references are avoided.
+- Critical references are repeated in the relevant time segments when stronger adherence is needed, without changing their declared purpose.
 - Time ranges are continuous, ordered, and add up to the requested duration.
-- Each time segment contains action and camera direction; dialogue and sound are included when relevant.
+- Each time segment contains physical action, camera direction, and the intended emotion/dramatic subtext; dialogue and sound are included when relevant.
 - Global identity, costume, prop, scene, spatial, lighting, and audio anchors are explicit.
 - Negative requirements are precise; use `不要字幕` and `不要无关BGM` when a clean base video is required.
 - Requests above the recommended stable ranges are called out as higher-variance before generation.
+- When using 视频无缝转场, map source video A and source video B separately; identify the transition trigger and confirm that both original clips remain unchanged.

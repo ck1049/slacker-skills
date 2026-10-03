@@ -36,10 +36,17 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 | [`minimax-h3-director`](skills/minimax-h3-director/SKILL.md) | 将创意、剧本和多模态参考转成 MiniMax H3 的 T2VA、I2VA、FL2VA、L2VA 或 Ref2VA 分镜与官方格式提示词 | 自包含官方格式指南；真实成片仍需 MiniMax H3 服务或应用 |
 | [agnes-video-director](skills/agnes-video-director/SKILL.md) | 为 Agnes Video 2.5 Flash / 2.5 编写中文视频提示词，处理角色参考、首尾帧、镜头节奏与成片检查 | 官方约束摘要与参考示例；真实生成需 Agnes 服务，收费操作需授权 |
 | [agnes-generate](skills/agnes-generate/SKILL.md) | 通过固定脚本与外部 JSON/CLI 参数执行 Agnes 图片和视频生成、多图参考、首尾帧、任务续查及下载 | Python 3.10+、Pillow；视频检查另需 opencv-python；密钥从环境变量读取 |
+| [agnes-ai-models](skills/agnes-ai-models/SKILL.md) | Agnes API 认证、区域路由、SDK 集成与 Agent 接入排障 | 接入层；视频提示词由 agnes-video-director 负责，实际任务由 agnes-generate 执行 |
 | [`tripo-3d-pipeline`](skills/tripo-3d-pipeline/SKILL.md) | 规划并执行 Tripo 3D 生成、纹理、拓扑、分割、绑定、动画、转换和归档 | Tripo CLI；付费任务必须先核价并获得明确批准 |
 | [`software-architecture-design`](skills/software-architecture-design/SKILL.md) | 主动分轮澄清软件项目需求，形成技术选型、架构、验收与发布方案，并提示可复用规范更新 | 技术栈中立；默认仅设计，实施、收费与发布沿用明确授权 |
 
 ## 快速使用
+
+### 官方即梦画布 CLI
+
+`dreamina-canvas-cli` 由即梦官方安装器维护，不作为本仓库的自维护技能内置。按[官方安装页](https://jimeng.jianying.com/ai-tool/install)和[官方指南](https://bytedance.larkoffice.com/wiki/QO66wGahSiakEHkJbxIcNBtDnAc)安装到实际执行环境；WSL 内的安装不等于 Windows Codex 已能发现技能，需另外确认宿主技能目录。
+
+使用 Canvas CLI 时先查询当前模型/模式能力；网页端 Seedance 的超长、延长、编辑等功能不自动成为 CLI 能力。保留用户选择的生成平台，普通提示词请求不自动提交生成。官方升级后也应复核宿主的本地触发边界适配。
 
 ### 通用代码质量技能
 

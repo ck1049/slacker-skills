@@ -15,7 +15,7 @@ Use this skill to create and maintain Codex-era 漫剧 projects. Keep the projec
 4. For each chapter, create one episode under `正片/第一季/XX`.
 5. Put recurring character, scene, prop, style, audio, and platform rules in global folders first. Put episode-only materials in the episode folder.
 6. Generate per-episode outputs using `references/episode-output-spec.md`.
-7. Check Seedance 2.5 constraints and prompt templates with `references/seedance2.5-production-rules.md`. Use the legacy `references/seedance2-production-rules.md` only when the user explicitly targets Seedance 2.0.
+7. Check Seedance 2.5 constraints and prompt templates with `references/seedance2.5-production-rules.md`. Distinguish platform capabilities from the selected execution channel; for Canvas CLI, verify its live model/mode parameters before promising executable outputs. Use the legacy `references/seedance2-production-rules.md` only when the user explicitly targets Seedance 2.0.
 
 ## Directory Rules
 

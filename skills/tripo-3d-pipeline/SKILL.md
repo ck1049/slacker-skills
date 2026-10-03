@@ -27,6 +27,7 @@ Inspect provided images/models first. Ask only for missing details that affect o
 
 - subject, style, proportions, and must-preserve features;
 - source type: text, single image, 2-4 views, or existing model/task;
+- for Tripo multiview uploads, explicitly map each provided image to the intended front, left-side, right-side or back slot. Do not silently substitute a 3/4 view for a required profile. Verify the subject's orientation against the actual interface or CLI contract; correct the slot mapping when it is reversed, without renaming or swapping source files merely to match a screen-facing direction;
 - target use: game engine, mobile/PC, film, AR/web, printing, animation, or toy;
 - target engine and version, units, up-axis, pivot, and desired format;
 - geometry: face/triangle budget, topology, separate parts, watertightness, LODs;
@@ -52,6 +53,8 @@ tripo <group> <command> --help
 Use `tripo ai --wizard` only for planning when it is guaranteed to stop for confirmation before submission. Otherwise compose deterministic `generate`, `model`, `anim`, `mesh`, and `task` commands yourself. Never probe behavior by submitting a paid task.
 
 Validate chain legality locally before quoting. Prefer staged execution for risky workflows: generate candidates, review previews, then process only the selected winner.
+
+For multiview assets, run a preflight slot/orientation check before submission. Record the actual file-to-view mapping; `01-front`, `02-left`, `03-right`, `04-back` are optional labels, not mandatory filenames or a requirement to supply four views for every task. Preserve the project's naming convention and source images. Inspect provided profiles against the selected interface's view convention; resolve ambiguous left/right meaning before a paid submission rather than guessing from filenames alone.
 
 ## 3. Quote credits and currency
 
