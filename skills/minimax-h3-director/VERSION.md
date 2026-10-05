@@ -1,4 +1,4 @@
-# Version 1.6.1
+# Version 1.6.4
 
 V1.0 is a usable, testable prompt-directing skill. It is not a claim that MiniMax publishes a single mandatory prompt grammar. Real video quality still requires generation tests and human evaluation.
 
@@ -19,3 +19,5 @@ V1.6 adds deferred asset binding for sequential production. Future prompts can r
 V1.6.1 refreshes official provenance to MiniMax-H3 commit `d21241f0a4b3acbb34c97dae47fa417b7065e438`. The official entry skill added portability metadata and four prompt-quality tips; the two authoritative runtime guides remained content-identical, so H3 field structures, routing, and validation behavior did not change.
 
 Compared with the unavailable V0.1 baseline described in the handoff, this release makes evidence provenance explicit, separates official facts from inferences and community advice, adds validation and regression cases, and provides maintainable templates and update rules.
+
+V1.6.4 adds project-derived complete-scene behavior, environmental affordance, prop direction and spatial-sound guidance. Existing official grammar/provenance remain unchanged; document and fixture checks do not certify generated-video quality.

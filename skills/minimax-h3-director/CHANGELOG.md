@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.4 — 2026-10-05
+
+- Added project-derived scene dynamics guidance for consequential secondary actors/NPCs, environmental affordances, prop working-face direction, reference-role separation and spatial audio transitions.
+- Tightened long-form handoffs to inspected selected actual states, without requiring one fixed layout or motion in deliberately quiet scenes.
+- Official guides, prompt field grammar, platform constraints and source provenance are unchanged. This is a design/process revision, not a claim of improved generated-video acceptance.
+
 ## 1.6.3 — 2026-09-29
 
 - Added platform handoff checks for hosted H3/H3 Max constraints and native ComfyUI timing, without changing the bundled rewrite grammar or default model.

@@ -77,7 +77,7 @@ Within a unit:
 
 ## 6. Maintain cross-unit continuity
 
-Carry forward the prior unit's ending state: identity, clothing, held objects, body position, screen direction, location, lighting, weather, damage state, UI values, dialogue state, ambience, and music phase.
+Carry forward the prior unit's inspected, selected actual ending state (not an unverified plan or a rejected last frame): identity, clothing, held objects, body position, screen direction, location, lighting, weather, damage state, UI values, dialogue state, ambience, and music phase.
 
 When exact visual continuity is important, designate the previous output video or its derived final frame as the next unit's input and select the appropriate supported mode. Before the earlier unit exists, reserve the next unit's official label through `unit://NN/output/video` or `derive://unit-NN/final-frame`, mark the prompt `text_ready` and execution `blocked_until_verified`, and include the label in the prewritten prompt. After generation, resolve the URI to a verified file without rewriting the prompt. Read `deferred-asset-binding.md` for the full contract.
 
@@ -95,3 +95,5 @@ Reject the document when any of these conditions is true:
 - A copy-ready block contains a local path, filename, file extension, or platform instruction.
 - A prompt media label is missing from the manifest, duplicated, or mapped to the wrong file type.
 - Unit ending and next-unit opening states contradict each other.
+
+For group/environment/device continuity, use `scene-dynamics-and-causal-staging.md`: retain operating targets, consequential NPC activity, available space and spatial sound while rebuilding composition for a motivated new viewpoint.

@@ -1,5 +1,14 @@
 # V1.6 validation checklist
 
+Scene-level design checks (project guidance; not automated perceptual certification):
+
+- Consequential secondary actors/NPC groups have observable tasks, routes or reactions; camera movement does not substitute for motion/contact.
+- Available visible space supports the premise; a nearby usable solution does not contradict a search.
+- The prop working face points toward its target, and reference pose/composition supports the intended result.
+- Crowd/room/water sound transitions follow actual space; controlled foley/snapshot timing is checked against native audio and complete dialogue.
+- Identity, environment and timed composition references have distinct roles; actual inspected upstream state is not reused as an unsuitable full layout.
+
+
 - Mode is explicit or assumption is visible.
 - Model and target platform are explicit before executable handoff. Apply `platform-handoff.md`; report platform preflight separately from the segment validator, which does not inspect API requests or ComfyUI runtime compatibility.
 - Reference decision is exactly one of `T2VA_DIRECT`, `REFERENCE_RECOMMENDED`, or `REFERENCE_REQUIRED`.

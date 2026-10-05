@@ -36,6 +36,9 @@ Before platform handoff, identify the model and execution surface and read `refe
 
 ## Output contract
 
+Before compiling a consequential crowd, secondary-actor, environment or device scene, read `references/scene-dynamics-and-causal-staging.md`. Design supporting behavior, spatial affordances, operating direction and sound transitions alongside the main event. Treat these as project design guidance, preserve official prompt fields and platform contracts, and apply only the relevant checks.
+
+
 Return, in order:
 
 - Total target runtime, adaptation assumptions, and generation-unit count.
