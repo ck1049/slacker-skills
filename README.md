@@ -32,7 +32,7 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 | [`jimeng-agent-workflow`](skills/jimeng-agent-workflow/SKILL.md) | 驱动即梦 Agent 完成漫剧需求、质量评估、角色/场景图、视频生成和进度监控 | `agent-browser` v0.23+、即梦账号，并配合漫剧脚手架 |
 | [`manju-project-scaffold`](skills/manju-project-scaffold/SKILL.md) | 创建和维护长篇漫剧工程，组织季度、剧集、全局素材及 Seedance 2.0/2.5 规范 | Python 3；自带目录脚手架脚本 |
 | [`web-novel-writer`](skills/web-novel-writer/SKILL.md) | 多题材原创网文：先冻结世界观、人物与因果大纲，再写多线章节，维护连续性/伏笔并逐章审改 | 无必装运行依赖；参考只提炼技法，不复制剧情；编辑验收不保证商业成绩 |
-| [`video-drama-director`](skills/video-drama-director/SKILL.md) | 跨模型编排剧情、表演及武侠/仙侠/现代动作，按角色与器械设计招式、特效展开、声音和摄影，并检查状态连续性 | Python 3.10+ 可选计划检查器；配合所选模型导演技能，生成与收费沿用用户授权 |
+| [`video-drama-director`](skills/video-drama-director/SKILL.md) | 跨模型编排剧情、表演及武侠/仙侠/现代动作；优化喜剧反应、短Q版插入、后期配乐音效与剪辑节奏，检查状态连续性 | Python 3.10+ 可选计划检查器；配合所选模型导演技能，生成与收费沿用用户授权 |
 | [`minimax-h3-director`](skills/minimax-h3-director/SKILL.md) | 将创意、剧本和多模态参考转成 MiniMax H3 的 T2VA、I2VA、FL2VA、L2VA 或 Ref2VA 分镜与官方格式提示词 | 自包含官方格式指南；真实成片仍需 MiniMax H3 服务或应用 |
 | [agnes-video-director](skills/agnes-video-director/SKILL.md) | 为 Agnes Video 2.5 Flash / 2.5 编写中文视频提示词，处理角色参考、首尾帧、镜头节奏与成片检查 | 官方约束摘要与参考示例；真实生成需 Agnes 服务，收费操作需授权 |
 | [agnes-generate](skills/agnes-generate/SKILL.md) | 通过固定脚本与外部 JSON/CLI 参数执行 Agnes 图片和视频生成、多图参考、首尾帧、任务续查及下载 | Python 3.10+、Pillow；视频检查另需 opencv-python；密钥从环境变量读取 |
