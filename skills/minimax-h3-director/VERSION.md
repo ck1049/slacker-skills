@@ -1,4 +1,4 @@
-# Version 1.6.4
+# Version 1.6.5
 
 V1.0 is a usable, testable prompt-directing skill. It is not a claim that MiniMax publishes a single mandatory prompt grammar. Real video quality still requires generation tests and human evaluation.
 
@@ -21,3 +21,5 @@ V1.6.1 refreshes official provenance to MiniMax-H3 commit `d21241f0a4b3acbb34c97
 Compared with the unavailable V0.1 baseline described in the handoff, this release makes evidence provenance explicit, separates official facts from inferences and community advice, adds validation and regression cases, and provides maintainable templates and update rules.
 
 V1.6.4 adds project-derived complete-scene behavior, environmental affordance, prop direction and spatial-sound guidance. Existing official grammar/provenance remain unchanged; document and fixture checks do not certify generated-video quality.
+
+V1.6.5 documents optional hosted Context-IR and 2K regeneration handoffs, including endpoint-specific limits and preservation of actual source inputs. See [platform handoff checks](references/platform-handoff.md). No model migration or generation is performed.

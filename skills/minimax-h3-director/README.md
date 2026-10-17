@@ -1,4 +1,4 @@
-# MiniMax H3 Director Skill — V1.6.4
+# MiniMax H3 Director Skill — V1.6.5
 
 An evidence-aware skill for turning briefs, long-form stories, scripts, and reference plans into one or more production-ready MiniMax H3 video prompts and shot plans.
 
@@ -17,3 +17,5 @@ Asset labels are created only from files verified in the user-authorized filesys
 For empty projects, the Director preserves a T2VA fast path and classifies references as unnecessary, recommended, or required. Missing assets are described through capability-neutral requests, allowing the current runtime to select any compatible generator without making this skill depend on a named tool, vendor, or model.
 
 Long-form plans support deferred binding: future prompts may reserve official media labels against typed upstream URIs such as `unit://01/output/video` or `derive://unit-01/final-frame`. Such prompts are text-ready but blocked until the upstream artifact resolves to a verified file, so continuity can be planned without inventing paths.
+
+V1.6.5 documents optional hosted Context-IR and 2K regeneration handoffs, including endpoint-specific limits and preservation of actual source inputs. See [platform handoff checks](references/platform-handoff.md). No model migration or generation is performed.

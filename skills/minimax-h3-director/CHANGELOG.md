@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.5 — 2026-10-17
+
+- Filled official documentation coverage for optional H3-Context-IR and 2K regeneration in `references/platform-handoff.md`: prompt result provenance, mutually exclusive source routes, whitelist/seven-day task conditions, source-video requirements and endpoint-specific text limits.
+- Evidence class: `official_explicit`. Sources accessed 2026-10-17: [Context-IR](https://platform.minimax.cn/docs/api-reference/video-generation-v2-h3-context-ir.md) and [regeneration](https://platform.minimax.cn/docs/api-reference/video-generation-v2-regeneration.md), linked from the Chinese generation guide. Discovery does not establish launch date or availability in another region/account.
+- Upstream remains `d21241f0a4b3acbb34c97dae47fa417b7065e438`; normalized official guides and prompt grammar are unchanged. No validator change, model switch, task submission or existing-work regeneration. Offline regressions do not certify rendered quality.
+
 ## 1.6.4 — 2026-10-05
 
 - Added project-derived scene dynamics guidance for consequential secondary actors/NPCs, environmental affordances, prop working-face direction, reference-role separation and spatial audio transitions.
