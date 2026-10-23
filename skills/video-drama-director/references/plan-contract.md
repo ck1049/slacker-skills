@@ -9,11 +9,31 @@
 - `entities`：稳定物理/角色ID到说明，至少注册出场角色、道具和声音来源；两台表要有可辨识身份，脚本不能判断两张图是否实际一样。
 - `initial_state`：被跟踪对象的完整起始状态，字段值为字符串/数字/布尔/null。只登记对剧情有用的字段；null为未知，规划阶段警报、执行阶段错误。角度等数值在`entities`的说明中另记单位、零轴、方向和观察坐标（如`angle_basis`）；仅数字相同不足以证明同一视觉角度，坐标仍须人工/媒体核对。
 - `tolerances`：可选数值量测容差，键为`对象.字段`；默认精确一致。来自测量误差，不能用大容差掩盖重新复位。
-- `units`：顺序数组，每镜唯一字符串`id`、`cast`、`composition`、`camera`、可选`dialogue`和正数`duration_s`（规划镜长而非API保证）；需要跨镜记录的对象必须在本镜`start_state`/`end_state`完整列出当前字段。
+- `units`：按叙事/剪辑顺序排列的镜头数组，不限定为独立生成任务；同一源片可供不同镜头取段。每镜唯一字符串`id`、`cast`、`composition`、`camera`、可选`dialogue`和正数`duration_s`（本镜时间轴长度而非源区间长度或API保证）；需要跨镜记录的对象必须在本镜`start_state`/`end_state`完整列出当前字段。任务身份与源文件身份另记，不用同一个ID兼指镜头和生成任务。
 - `events`：按时间顺序列本镜事件：唯一`id`、具体`cause`、前提`requires`和改变`effects`。改变不能凭空发生；已建立的连续过程也写出持续原因。事件效果逐个应用；终态必须匹配。
 - `sounds`：`domain`为`diegetic`/`offscreen_diegetic`/`subjective`/`score`，都写`purpose`。现场声注册`source`与`requires`，离散声绑定本镜`at_event`，声音条件在该事件**效果之后**检查；已经存在的连续环境声写`continuous:true`，条件在本镜起态检查。现场声另写`stop_condition`说明如何停下或有意延续到哪里；可用`ends_at_event`绑定本镜终止事件，脚本查存在与先后顺序。声明`duration_s`后，每声音另写`window_s:[开始秒,结束秒]`，检查在镜长内，不认证实际音轨。需要事件发生前的声响时拆为先发声再变状态两个事件。主观声写`listener`，配乐不冒充物件实际发声。
 - 有意违反普通物理的声事件写`exception_rule`、`setup_unit`（本镜或先前镜）、`reaction`、`payoff`（兑现或明确有意悬念）。这只是声明完整性，仍需检查观众能否看懂。普通物理条件不成立时，不用异常字段偷偷免掉条件，应正确分类/重设计。
 - 执行检查另要`selected`：`media_path`、`end_evidence`与`state_reviewed:true`；路径相对计划所在目录或绝对路径。实际状态复核后才能填true；文件存在不代表内容真实，脚本也不做媒体验证。执行账本须填实际状态，不能把计划值换标签当实测。
+
+## 执行选片与同源复用
+
+`selected.source_range_s:[开始秒,结束秒]`是原始素材秒轴的半开区间`[开始,结束)`，须为有限数值且满足`0≤开始<结束`。可选`source_duration_s`填写已有媒体检查取得的有限正时长，脚本据此检查上界；未取得时省略，不编造。脚本不解码、不测时长，也不从本镜`duration_s`反推源时长；变速、裁切和声音用途仍按制作账本记录。
+
+`end_evidence`须对应本次实际取段末态，不自动指原文件最后一帧；同源不同取段分别复核状态。声音的`window_s`仍位于本镜时间轴，不直接填源素材秒数。
+
+同一路径的`[0,1)`与`[1,2)`可分别入片。相同或重叠源区间默认报`duplicate_selection`；省略区间兼容旧账本，表示整条素材，因此与该源的任意取段重叠。有意回忆、重放或同源交叉剪辑时，后一次选片写非空`reuse_reason`，降为`intentional_reuse`警报供复核，不能只为消错编造用途。有意重放不免除跨镜状态、文件存在或实际复核检查；跨时空回忆另按叙事边界组织状态账本。
+
+例如两个镜头分别声明：
+
+```json
+{"media_path":"source.mp4","end_evidence":"shot-a.json","state_reviewed":true,"source_range_s":[0,1]}
+```
+
+```json
+{"media_path":"source.mp4","end_evidence":"shot-b.json","state_reviewed":true,"source_range_s":[1,2]}
+```
+
+这里只示意选片字段，文件和复核值须来自实际制作，不是可直接认证的媒体示例。运行`python scripts/test_source_selection.py`检查取段、重复、回放与证据边界，测试只使用临时文本夹具。
 
 ## 两镜例子
 

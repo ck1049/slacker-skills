@@ -47,6 +47,27 @@ def state_map(value: Any, label: str) -> dict[str, dict]:
     return result
 
 
+def finite_number(value: Any) -> bool:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:
+        return False
+
+
+def source_range(value: Any) -> tuple[float, float]:
+    """原始素材秒轴的半开区间；不从存在的文件推断实际媒体时长。"""
+    if not isinstance(value, list) or len(value) != 2:
+        raise ValueError("source_range_s必须是[开始秒,结束秒]数组")
+    if not all(finite_number(v) for v in value):
+        raise ValueError("source_range_s须为有限数值")
+    start, end = value
+    if start < 0 or end <= start:
+        raise ValueError("source_range_s须满足0≤开始<结束")
+    return float(start), float(end)
+
+
 def validate_plan(plan: dict, phase: str = "planning", base: Path | None = None) -> dict:
     entities = mapping(plan.get("entities"), "entities")
     state = deepcopy(state_map(plan.get("initial_state", {}), "initial_state"))
@@ -59,7 +80,7 @@ def validate_plan(plan: dict, phase: str = "planning", base: Path | None = None)
             raise ValueError(f"容差{key}必须是有限非负数")
     issues: list[Issue] = []
     unit_ids: set[str] = set()
-    observed_files: set[Path] = set()
+    observed_selections: dict[Path, list[tuple[str, tuple[float, float] | None]]] = {}
     repetition = 0
 
     def add(unit: str, code: str, detail: str, severity: str = "error") -> None:
@@ -195,6 +216,25 @@ def validate_plan(plan: dict, phase: str = "planning", base: Path | None = None)
             selected = mapping(unit.get("selected", {}), "selected")
             if selected.get("state_reviewed") is not True:
                 add(unit_id, "unreviewed_output", "实际终态未声明复核")
+            interval = None
+            valid_interval = True
+            if "source_range_s" in selected:
+                try:
+                    interval = source_range(selected["source_range_s"])
+                except ValueError as exc:
+                    add(unit_id, "source_range", str(exc))
+                    valid_interval = False
+            if "source_duration_s" in selected:
+                source_duration = selected["source_duration_s"]
+                if not finite_number(source_duration) or source_duration <= 0:
+                    add(unit_id, "source_duration", "source_duration_s须为已核对的有限正数")
+                elif interval is not None and interval[1] > source_duration:
+                    add(unit_id, "source_range", "选片区间超过声明的源素材时长")
+                    valid_interval = False
+            reuse_reason = selected.get("reuse_reason")
+            if "reuse_reason" in selected and (not isinstance(reuse_reason, str) or not reuse_reason.strip()):
+                add(unit_id, "reuse_reason", "有意复用理由须为非空字符串")
+            intentional_reuse = isinstance(reuse_reason, str) and bool(reuse_reason.strip())
             for field in ("media_path", "end_evidence"):
                 value = selected.get(field)
                 if not isinstance(value, str) or not value:
@@ -204,10 +244,19 @@ def validate_plan(plan: dict, phase: str = "planning", base: Path | None = None)
                 file = (base / file if base is not None and not file.is_absolute() else file).resolve()
                 if not file.is_file():
                     add(unit_id, "missing_evidence", f"文件不存在: {file}")
-                if field == "media_path":
-                    if file in observed_files:
-                        add(unit_id, "duplicate_selection", "重复入片路径")
-                    observed_files.add(file)
+                if field == "media_path" and file.is_file() and valid_interval:
+                    previous = observed_selections.setdefault(file, [])
+                    # 未给区间沿用整条素材语义；相邻半开区间不重叠。
+                    overlaps = [prior_id for prior_id, prior_range in previous
+                                if interval is None or prior_range is None
+                                or max(interval[0], prior_range[0]) < min(interval[1], prior_range[1])]
+                    if overlaps:
+                        prior_ids = ", ".join(overlaps)
+                        if intentional_reuse:
+                            add(unit_id, "intentional_reuse", f"与{prior_ids}同源重叠；复用理由：{reuse_reason}", "warning")
+                        else:
+                            add(unit_id, "duplicate_selection", f"与{prior_ids}重复采用同源区间；有意回放须说明reuse_reason")
+                    previous.append((unit_id, interval))
         cast = sequence(unit.get("cast", []), "cast")
         if any(character not in entities for character in cast):
             add(unit_id, "unknown_cast", "角色未注册")
