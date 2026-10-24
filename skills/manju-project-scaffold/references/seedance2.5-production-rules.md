@@ -25,6 +25,7 @@ Keep the readable `@图片N` / `@视频N` / `@音频N` labels in creative storyb
 
 ## Mode Selection
 
+- **专用样片与转正片（CLI核验：2026-10-24）**：已选择即梦时默认使用画布CLI，旧CLI仅作补充。1.1.1支持专用样片及 `node promote video-sample`。先通过 `model list --type video` / `model find` 发现模型，再用 `model <canonical-model>` 确认 `matches[].generation.generationKind=sample`、`draftPromotion.params` 及该模式限制；本次实查模型 `seedance_2.5_draft`、480p、4—30秒，转正目标1080p。不得把普通 `seedance_2.5` 的480p当作样片，或猜测 `--sample` / `--draft` 参数。用户选定满意样片后，核对转正新增报价和本轮费用授权，按当前命令生成新正片节点；任务不确定时续查同一提交身份。生成前与交付时提醒样片最长保存7天，具体截止时间以服务端为准。1.0.1不支持该流程的旧核查属于历史，不代表新版能力；也不能把样片转正等同于任意视频智能超清。执行细节读取现行 `dreamina-canvas-cli` 技能的恢复与样片转正指引。
 - **全能参考**: generate a standard 4-30s clip from text plus image/video/audio references; audio-only input is supported.
 - **首尾帧**: use when the opening and ending composition must be locked.
 - **智能编辑 / 高级编辑 / 视频编辑**: change, remove, or add local elements while preserving the rest of an existing video. For precise work, include the marked region and timestamp.

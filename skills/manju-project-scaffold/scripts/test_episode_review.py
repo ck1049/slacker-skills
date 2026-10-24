@@ -1,0 +1,119 @@
+"""Selection, recovery and scaffold behavior in isolated temporary directories."""
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+import tempfile
+import unittest
+from html.parser import HTMLParser
+from pathlib import Path
+
+from render_episode_review import render
+
+
+class Page(HTMLParser):
+    def __init__(self, text: str) -> None:
+        super().__init__()
+        self.elements: list[tuple[str, dict]] = []
+        self.feed(text)
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.elements.append((tag, dict(attrs)))
+
+
+class ReviewTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory(prefix='漫剧 审阅测试 ')
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.manifest = self.root / '制作审阅' / '素材清单.json'
+        self.manifest.parent.mkdir()
+
+    def write(self, items: list[dict], **extra: object) -> None:
+        self.manifest.write_text(json.dumps({'title': '另一题材 · 古装探案', 'items': items, **extra}, ensure_ascii=False), encoding='utf-8')
+
+    def item(self, filename: str, version: str, **extra: object) -> dict:
+        (self.root / filename).write_bytes(b'fixture')
+        return {'id': '同一道具', 'category': 'images', 'version': version, 'current': True, 'status': '待审', 'path': '../' + filename, **extra}
+
+    def test_replace_without_deleting_evidence_and_hide_empty_categories(self) -> None:
+        old = self.item('票券 旧版.png', 'v001', current=False, status='已退回')
+        new = self.item('票券 新版.png', 'v002')
+        self.write([old, new])
+        page = Page(render(self.manifest).read_text(encoding='utf-8'))
+        images = [attrs['src'] for tag, attrs in page.elements if tag == 'img']
+        sections = [attrs.get('id') for tag, attrs in page.elements if tag == 'section']
+        self.assertEqual(len(images), 1)
+        self.assertIn('%E6%96%B0%E7%89%88', images[0])
+        self.assertNotIn('audio', sections)
+        self.assertTrue((self.root / '票券 旧版.png').is_file())
+        self.assertTrue(any(tag == 'button' and 'data-copy' in attrs for tag, attrs in page.elements))
+        ids = [attrs['id'] for _, attrs in page.elements if 'id' in attrs]
+        self.assertEqual(len(ids), len(set(ids)))
+
+    def test_duplicate_selection_or_missing_source_preserves_old_page(self) -> None:
+        item = self.item('当前.png', 'v001')
+        self.write([item])
+        output = render(self.manifest)
+        previous = output.read_bytes()
+        self.write([item, {**item, 'version': 'v002'}])
+        with self.assertRaisesRegex(ValueError, '多个当前版本'):
+            render(self.manifest)
+        self.assertEqual(output.read_bytes(), previous)
+        self.write([{**item, 'path': '../不存在.png'}])
+        with self.assertRaisesRegex(ValueError, '不存在'):
+            render(self.manifest)
+        self.assertEqual(output.read_bytes(), previous)
+
+    def test_rejected_current_has_no_media_and_task_is_escaped(self) -> None:
+        item = self.item('废稿.png', 'v001', status='已退回')
+        self.write([item], tasks=[{'name': '<script>alert(1)</script>', 'status': '生成中'}])
+        text = render(self.manifest).read_text(encoding='utf-8')
+        self.assertNotIn('<img ', text)
+        self.assertNotIn('<script>alert(1)</script>', text)
+        self.assertIn('&lt;script&gt;', text)
+
+    def test_script_text_is_not_template_or_executable_markup(self) -> None:
+        source = self.root / '剧本.txt'
+        source.write_text('<script>alert(1)</script> @@NAV@@ 中文对白', encoding='utf-8')
+        self.write([{'id': '正稿', 'category': 'script', 'version': 'v003', 'current': True, 'status': '待审', 'path': '../剧本.txt'}])
+        text = render(self.manifest).read_text(encoding='utf-8')
+        self.assertIn('&lt;script&gt;alert(1)&lt;/script&gt; @@NAV@@ 中文对白', text)
+
+    def test_scaffold_is_reentrant_without_overwriting_user_review(self) -> None:
+        script = Path(__file__).with_name('scaffold_manju.py')
+        command = [sys.executable, '-B', '-X', 'utf8', str(script), 'episodes', '06', '--season', str(self.root / '剧集')]
+        subprocess.run(command, check=True, capture_output=True, timeout=20)
+        folder = self.root / '剧集/06/制作审阅'
+        manifest, page = folder / '素材清单.json', folder / '本集制作总览.html'
+        manifest.write_text('{"items": [], "title": "用户已改名"}', encoding='utf-8')
+        page.write_text('用户自定义页面', encoding='utf-8')
+        subprocess.run(command, check=True, capture_output=True, timeout=20)
+        self.assertEqual(json.loads(manifest.read_text(encoding='utf-8'))['title'], '用户已改名')
+        self.assertEqual(page.read_text(encoding='utf-8'), '用户自定义页面')
+
+    def test_all_categories_render_without_autoplay_and_protect_source(self) -> None:
+        items = []
+        for category, suffix in [('script', '.txt'), ('images', '.png'), ('audio', '.wav'), ('video', '.mp4'), ('sfx', '.wav'), ('music', '.wav'), ('final', '.mp4')]:
+            source = self.root / (category + suffix)
+            source.write_text('测试素材', encoding='utf-8')
+            items.append({'id': category, 'category': category, 'version': 'v001', 'current': True, 'status': '待审', 'path': '../' + source.name})
+        self.write(items)
+        page = Page(render(self.manifest).read_text(encoding='utf-8'))
+        sections = {attrs.get('id') for tag, attrs in page.elements if tag == 'section'}
+        self.assertEqual(sections, {item['category'] for item in items})
+        players = [attrs for tag, attrs in page.elements if tag in ('audio', 'video')]
+        self.assertEqual(len(players), 5)
+        self.assertTrue(all(attrs.get('preload') == 'none' and 'autoplay' not in attrs for attrs in players))
+        # An HTML script source can be displayed, but never overwritten by the overview.
+        protected = self.root / '剧本.html'
+        protected.write_text('原剧本', encoding='utf-8')
+        self.write([{'id': '剧本', 'category': 'script', 'version': 'v001', 'current': True, 'status': '待审', 'path': '../剧本.html'}])
+        with self.assertRaisesRegex(ValueError, '不能覆盖当前素材'):
+            render(self.manifest, protected)
+        self.assertEqual(protected.read_text(encoding='utf-8'), '原剧本')
+
+
+if __name__ == '__main__':
+    unittest.main()

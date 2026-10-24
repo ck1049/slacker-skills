@@ -37,6 +37,10 @@ Create or update:
 - `正片/第一季/XX/场景/第XX集_场景资料.md`
 - `正片/第一季/XX/道具/第XX集_道具资料.md`
 - `正片/第一季/XX/音频/第XX集_音频设计.md`
+- `正片/第一季/XX/制作审阅/素材清单.json`
+- `正片/第一季/XX/制作审阅/本集制作总览.html`
+
+The stable HTML entrypoint shows the current script, images, audio references/dialogue, video clips, SFX, music and final cuts when present. Follow [审阅页规范](episode-review-page.md); update the manifest and regenerate the same page after material or production-state changes, not only at delivery. Selection changes affect the overview, not historical evidence or the project's formal acceptance index.
 
 ## Adapted Script Format
 

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>@@TITLE@@</title>
+<style>
+:root{color-scheme:dark;--bg:#101720;--panel:#192532;--line:#344659;--muted:#bac8d5;--accent:#8bd6ed}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#edf4f8;font:16px/1.65 system-ui,sans-serif}
+main{max-width:1360px;margin:auto;padding:32px 24px 64px}h1{font-size:clamp(26px,4vw,40px);line-height:1.25}h2{margin:0}h3{margin:0 0 8px;font-size:18px}
+p{margin:8px 0;color:var(--muted)}a{color:var(--accent);text-underline-offset:3px}button,.link{display:inline-block;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--accent);padding:7px 12px;font:inherit;cursor:pointer;text-decoration:none}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f6cd72;outline-offset:3px}.toolbar,.links{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.toolbar{margin:20px 0}.links{margin-top:12px;font-size:14px}
+nav{display:flex;gap:16px;flex-wrap:wrap;padding:14px 0;border-block:1px solid var(--line)}section{margin-top:36px;scroll-margin-top:12px}.section-head{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:18px}article,.tasks,.empty{background:var(--panel);padding:20px;border:1px solid var(--line);border-radius:12px;min-width:0}
+.status{display:inline-block;padding:2px 9px;border:1px solid #617b94;border-radius:6px;font-size:13px;color:#dbebf4}.version{color:var(--muted);margin-right:10px}
+img,video{display:block;width:100%;max-height:540px;object-fit:contain;background:#0c1118;border-radius:6px;margin-top:14px}audio{width:100%;margin-top:14px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:15px/1.8 system-ui;margin:16px 0 0}details{margin-top:12px}summary{cursor:pointer}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px;overflow-wrap:anywhere}.table-wrap{overflow:auto}.path{width:100%;background:#101720;border:1px solid var(--line);color:#dae7ef;padding:8px;font:13px/1.6 monospace}.small{font-size:13px}#feedback{min-height:1.5em}.script-card{grid-column:1/-1}
+@media(max-width:600px){main{padding:20px 14px 40px}article{padding:14px}.section-head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body><main>
+<header><p class="small">每集制作总览 · 当前版本</p><h1>@@TITLE@@</h1><p>@@SUMMARY@@</p><p class="small">页面生成：@@RENDERED@@ · 制作记录：@@UPDATED@@</p></header>
+<div class="toolbar"><button type="button" id="refresh">刷新页面</button><label><input type="checkbox" id="auto-refresh" checked> 每15秒刷新（播放时暂停）</label>@@MANIFEST_LINK@@</div>
+<p class="small">页面仅展示当前选定材料；“待审”不代表已采用。文件夹链接可能受浏览器限制，可复制路径到资源管理器；只发送 HTML 不会附带素材。</p>
+<p id="feedback" class="small" role="status" aria-live="polite"></p>
+<nav aria-label="本集内容">@@NAV@@</nav>
+@@TASKS@@
+@@SECTIONS@@
+</main>
+<script>
+(function () {
+  const auto = document.getElementById('auto-refresh');
+  const storageKey = 'episode-review:' + location.pathname;
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+    if (saved) { auto.checked = saved.auto !== false; window.scrollTo(0, saved.scroll || 0); }
+  } catch (_) {}
+  function saveState() {
+    try { sessionStorage.setItem(storageKey, JSON.stringify({auto: auto.checked, scroll: window.scrollY})); } catch (_) {}
+  }
+  function reload() { saveState(); location.reload(); }
+  document.getElementById('refresh').addEventListener('click', reload);
+  auto.addEventListener('change', saveState);
+  window.addEventListener('pagehide', saveState);
+  setInterval(function () {
+    const playing = Array.from(document.querySelectorAll('audio,video')).some(function (media) { return !media.paused && !media.ended; });
+    if (auto.checked && !document.hidden && !playing && !document.querySelector('input.path:focus')) reload();
+  }, 15000);
+  document.querySelectorAll('button[data-copy]').forEach(function (button) {
+    button.addEventListener('click', async function () {
+      const field = document.getElementById(button.dataset.copy);
+      const feedback = document.getElementById('feedback');
+      try {
+        await navigator.clipboard.writeText(field.value);
+        feedback.textContent = '已复制文件夹路径';
+      } catch (_) {
+        const details = field.closest('details');
+        if (details) details.open = true;
+        field.focus(); field.select();
+        feedback.textContent = '浏览器未允许自动复制，已选中路径，请按 Ctrl+C 复制。';
+      }
+    });
+  });
+})();
+</script></body></html>

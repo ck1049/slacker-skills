@@ -1,6 +1,6 @@
 ---
 name: manju-project-scaffold
-description: Create and maintain long-form 漫剧 project workspaces for novel-to-AI-video adaptation. Use when the user asks to create a new 漫剧工程, migrate chapter source text, add seasons or episodes, organize global characters/scenes/props, or produce consistent per-episode artifacts for 即梦 Seedance 2.5, including chapter adaptation scripts, storyboard prompts, reference-image prompts, and reusable production rules.
+description: Create and maintain long-form 漫剧 project workspaces, shared assets and per-episode live HTML review overviews. Use for creating 漫剧工程, migrating chapters, adding seasons/episodes, organizing global characters/scenes/props, or maintaining consistent adaptation scripts, storyboard prompts, reference materials and current-version production pages.
 ---
 
 # 漫剧工程脚手架
@@ -14,7 +14,7 @@ Use this skill to create and maintain Codex-era 漫剧 projects. Keep the projec
 3. Store original novel chapters under `大纲/原文/第XXXX章_原文.txt`.
 4. For each chapter, create one episode under `正片/第一季/XX`.
 5. Put recurring character, scene, prop, style, audio, and platform rules in global folders first. Put episode-only materials in the episode folder.
-6. Generate per-episode outputs using `references/episode-output-spec.md`.
+6. Generate per-episode outputs using `references/episode-output-spec.md`. Maintain one stable, current-version HTML production overview per episode; read [审阅页规范](references/episode-review-page.md) when creating or updating it. Use the bundled template and renderer rather than inventing a different page for every batch.
 7. Check Seedance 2.5 constraints and prompt templates with `references/seedance2.5-production-rules.md`. Distinguish platform capabilities from the selected execution channel; for Canvas CLI, verify its live model/mode parameters before promising executable outputs. Use the legacy `references/seedance2-production-rules.md` only when the user explicitly targets Seedance 2.0.
 
 ## Directory Rules
@@ -37,6 +37,7 @@ Episode root:
 - `分镜/分镜图`: reference-image prompts and generated storyboard stills.
 - `分镜/分镜视频`: generated video clips and notes.
 - `角色`, `场景`, `道具`, `音频`: episode-only assets.
+- `制作审阅/素材清单.json` and `制作审阅/本集制作总览.html`: current selections, production status and playable/viewable materials. Rebuild the same overview after script, asset, task, review or final-cut changes; hide replaced/rejected media while preserving their source evidence outside the current display.
 
 ## Script Usage
 
@@ -46,6 +47,7 @@ Run from the 漫剧 workspace root. Prefer relative paths so the skill remains p
 python ".agents/skills/manju-project-scaffold/scripts/scaffold_manju.py" project "作品名" --base "."
 python ".agents/skills/manju-project-scaffold/scripts/scaffold_manju.py" season "第二季" --under "作品名/正片"
 python ".agents/skills/manju-project-scaffold/scripts/scaffold_manju.py" episodes 02 03 --season "作品名/正片/第一季"
+python ".agents/skills/manju-project-scaffold/scripts/render_episode_review.py" "作品名/正片/第一季/02/制作审阅/素材清单.json"
 ```
 
 If the skill is invoked from outside the project root, first change into the project root or pass project-relative paths from that root.
@@ -63,10 +65,11 @@ For each chapter-to-episode task:
 5. Default to Seedance 2.5 standard clips of 4-30 seconds. Prefer 8-15 seconds for dense or continuity-sensitive beats; use 30-180 second super-long mode only for a deliberately timecoded long-form sequence.
 6. For every clip, specify duration, aspect ratio, visual style, characters, expressions, actions, lighting, camera angle, camera movement, sound, and reference materials.
 7. When continuity matters, create storyboard/reference-image prompts before video prompts.
-8. End with a production checklist: clip duration valid, reference count valid, global assets updated, episode assets complete.
+8. End with a production checklist: clip duration valid, reference count valid, global assets updated, episode assets complete, and the stable HTML overview refreshed from actual current selections and task states.
 
 Read these references as needed:
 
 - `references/episode-output-spec.md`: exact files and sections to create for each episode.
+- [references/episode-review-page.md](references/episode-review-page.md): current-version selection, incremental refresh, folder/file links and the local HTML template.
 - `references/seedance2.5-production-rules.md`: current Seedance 2.5 platform constraints, mode selection, prompt templates, and validation rules.
 - `references/seedance2-production-rules.md`: legacy Seedance 2.0 rules for explicitly requested 2.0 deliverables.

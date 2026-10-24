@@ -8,6 +8,8 @@ import argparse
 import sys
 from pathlib import Path
 
+from render_episode_review import initialize_review
+
 
 ROOT_SUBDIRS = [
     "db",
@@ -54,6 +56,7 @@ def ensure_dirs(base: Path, paths: list[str]) -> None:
 
 def create_episode_block(base: Path) -> None:
     ensure_dirs(base, EPISODE_SUBDIRS)
+    initialize_review(base)
 
 
 def create_project(name: str, base: Path) -> Path:
