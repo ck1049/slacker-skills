@@ -21,7 +21,7 @@ description: 将故事、小说和剧本改编为有场面调度、情绪表演�
 | Q版、喜剧、信息文字或统一后期配乐 | [表演反差与后期声音](references/expressive-comedy-and-post-sound.md)中相应小节；非喜剧无需添加Q版 |
 | 跨镜道具状态、揭晓顺序、声音来源 | [连续性与声音因果](references/continuity-and-sound.md) |
 | 编译具体模型输入、能力未知或失败归因 | [模型适配](references/model-adaptation.md)，具体接口与配置转当前模型技能 |
-| 审片、返工、预算或批量推进 | [评估与返工](references/review-and-iteration.md)中相应小节 |
+| 审片、返工、预算、交付或批量推进 | [评估与返工](references/review-and-iteration.md)中相应小节 |
 | 确需声明级自动检查 | [计划契约](references/plan-contract.md)，再运行所需脚本 |
 | 查写法、失败来源或已认可个案 | 按目的选[设计示例](references/worked-examples.md)、[失败复盘](references/case-study-echo30.md)或[已认可返修案例](references/case-study-reviewed-revisions.md)；不作为每次创作的前置阅读 |
 
