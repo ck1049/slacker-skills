@@ -31,6 +31,7 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 | [`alipay-mihoyo-analysis`](skills/alipay-mihoyo-analysis/SKILL.md) | 从支付宝账单 PDF 提取米哈游交易，区分《原神》和《崩坏：星穹铁道》，生成 Excel 报告 | Python、`pdfplumber`、`openpyxl`；仅支持未加密的文本型 PDF |
 | [`jimeng-agent-workflow`](skills/jimeng-agent-workflow/SKILL.md) | 驱动即梦 Agent 完成漫剧需求、质量评估、角色/场景图、视频生成和进度监控 | `agent-browser` v0.23+、即梦账号，并配合漫剧脚手架 |
 | [`manju-project-scaffold`](skills/manju-project-scaffold/SKILL.md) | 创建和维护长篇漫剧工程，组织季度、剧集、全局素材及 Seedance 2.0/2.5 规范 | Python 3；自带目录脚手架脚本 |
+| [`manju-sfx-library`](skills/manju-sfx-library/SKILL.md) | 免费商用音效检索与入库、来源许可管理、镜头时间轴和音效分轨；支持自有录音声明 | Python 3.11+，转换/渲染需 FFmpeg；音频库与本机配置独立，不随技能下载素材 |
 | [`web-novel-writer`](skills/web-novel-writer/SKILL.md) | 多题材原创网文：先冻结世界观、人物与因果大纲，再写多线章节，维护连续性/伏笔并逐章审改 | 无必装运行依赖；参考只提炼技法，不复制剧情；编辑验收不保证商业成绩 |
 | [`video-drama-director`](skills/video-drama-director/SKILL.md) | 跨模型编排剧情、表演及武侠/仙侠/现代动作；优化喜剧反应、短Q版插入、后期配乐音效与剪辑节奏，检查状态连续性 | Python 3.10+ 可选计划检查器；配合所选模型导演技能，生成与收费沿用用户授权 |
 | [`minimax-h3-director`](skills/minimax-h3-director/SKILL.md) | 将创意、剧本和多模态参考转成 MiniMax H3 的 T2VA、I2VA、FL2VA、L2VA 或 Ref2VA 分镜与官方格式提示词 | 自包含官方格式指南；真实成片仍需 MiniMax H3 服务或应用 |
