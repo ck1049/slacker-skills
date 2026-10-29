@@ -69,7 +69,7 @@ For each chapter-to-episode task:
 
 Read these references as needed:
 
-- `references/episode-output-spec.md`: exact files and sections to create for each episode.
+- `references/episode-output-spec.md`: exact files and sections to create for each episode. 用户认可并要求登记正片时，按其中“正片登记与发布副本”交付存档母版与经字段检查的发布副本，保留必要 AI 标识与真实来源。
 - [references/episode-review-page.md](references/episode-review-page.md): current-version selection, incremental refresh, folder/file links and the local HTML template.
 - `references/seedance2.5-production-rules.md`: current Seedance 2.5 platform constraints, mode selection, prompt templates, and validation rules.
 - `references/seedance2-production-rules.md`: legacy Seedance 2.0 rules for explicitly requested 2.0 deliverables.
