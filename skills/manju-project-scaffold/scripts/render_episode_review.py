@@ -50,6 +50,34 @@ def folder_links(folder: Path, page_dir: Path, key: str) -> str:
     )
 
 
+def input_reference_panel(item: dict, base: Path, page_dir: Path) -> str:
+    """Render explicitly bound inputs, never infer them from global assets."""
+    refs = item.get('input_references')
+    if refs is None:
+        return '<p class="small">本镜实际输入参考尚未记录，需从任务回执补齐。</p>'
+    if not isinstance(refs, list):
+        raise ValueError('input_references 须为数组')
+    if not refs:
+        return '<p class="small">已记录本镜无图片或音色参考输入。</p>'
+    entries = []
+    for ref in refs:
+        if not isinstance(ref, dict) or ref.get('kind') not in ('image', 'audio', 'record'):
+            raise ValueError('参考输入须指定 image、audio 或 record')
+        path = local_file(ref.get('path'), base)
+        url = link_to(path, page_dir)
+        label = escape(ref.get('label', '参考输入'))
+        role = escape(ref.get('role', ''))
+        digest = escape(ref.get('sha256', '未记录'))
+        preview = (f'<a href="{url}"><img loading="lazy" src="{url}" '
+                   f'alt="{label}" style="max-width:190px;max-height:240px;object-fit:contain"></a>'
+                   if ref['kind'] == 'image' else '')
+        entries.append(f'<div>{preview}<p><a href="{url}">{label}</a> · {role} '
+                       f'<small>SHA-256：{digest}</small></p></div>')
+    return ('<details class="input-references"><summary>查看本镜实际绑定的参考图与音色</summary>'
+            '<p>输入绑定不等于输出或听审通过；点击图片查看原图。</p>'
+            + ''.join(entries) + '</details>')
+
+
 def current_items(data: dict) -> list[dict]:
     items = data.get('items', [])
     if not isinstance(items, list):
@@ -113,6 +141,8 @@ def render(manifest: Path, output: Path | None = None) -> Path:
                 media = f'<video controls preload="none" playsinline src="{url}"></video>'
             else:
                 media = f'<audio controls preload="none" src="{url}"></audio>'
+            if category == 'video':
+                media += input_reference_panel(item, manifest.parent, output.parent)
             cards.append(
                 f'<article class="{"script-card" if category == "script" else "media-card"}">'
                 f'<h3>{escape(item.get("label", item["id"]))}</h3>'
@@ -131,12 +161,23 @@ def render(manifest: Path, output: Path | None = None) -> Path:
     if tasks:
         rows = ''.join(f'<tr><td>{escape(t["name"])}</td><td>{escape(t["status"])}</td><td>{escape(t.get("note", ""))}</td></tr>' for t in tasks)
         task_html = f'<section class="tasks"><h2>任务进度</h2><div class="table-wrap"><table><thead><tr><th>任务</th><th>实际状态</th><th>说明</th></tr></thead><tbody>{rows}</tbody></table></div></section>'
+    related = data.get('related_pages', [])
+    if not isinstance(related, list):
+        raise ValueError('related_pages 须为数组')
+    related_links = []
+    for entry in related:
+        if not isinstance(entry, dict) or not isinstance(entry.get('label'), str):
+            raise ValueError('related_pages 须包含 label 和本地 path')
+        target = local_file(entry.get('path'), manifest.parent)
+        if target.suffix.lower() != '.html':
+            raise ValueError('关联审阅入口须为本地 HTML')
+        related_links.append(f'<a class="link" href="{link_to(target, output.parent)}">{escape(entry["label"])}</a>')
     values = {
         'TITLE': escape(data.get('title', '本集制作总览')),
         'SUMMARY': escape(data.get('summary', '尚未登记制作状态')),
         'UPDATED': escape(data.get('updated_at') or '尚未登记'),
         'RENDERED': escape(datetime.now().astimezone().isoformat(timespec='seconds')),
-        'MANIFEST_LINK': f'<a class="link" href="{link_to(manifest, output.parent)}">查看素材清单</a>',
+        'MANIFEST_LINK': f'<a class="link" href="{link_to(manifest, output.parent)}">查看素材清单</a>' + ''.join(related_links),
         'NAV': ''.join(nav), 'TASKS': task_html,
         'SECTIONS': ''.join(sections) or '<section class="empty">尚无当前素材；生成或登记后更新本页。</section>',
     }

@@ -37,6 +37,37 @@ class ReviewTests(unittest.TestCase):
         (self.root / filename).write_bytes(b'fixture')
         return {'id': '同一道具', 'category': 'images', 'version': version, 'current': True, 'status': '待审', 'path': '../' + filename, **extra}
 
+    def test_related_review_page_link_is_visible_and_validated(self) -> None:
+        target = self.manifest.parent / '参考审核.html'
+        target.write_text('ok', encoding='utf-8')
+        self.write([], related_pages=[{'label': '参考审核', 'path': target.name}])
+        output = render(self.manifest)
+        self.assertIn('参考审核', output.read_text(encoding='utf-8'))
+        before = output.read_bytes()
+        self.write([], related_pages=[{'label': '缺失', 'path': 'missing.html'}])
+        with self.assertRaisesRegex(ValueError, '不存在'):
+            render(self.manifest)
+        self.assertEqual(output.read_bytes(), before)
+
+    def test_video_exposes_declared_inputs_and_rejects_missing_reference(self) -> None:
+        video = self.item('片段.mp4', 'v001')
+        video['category'] = 'video'
+        ref = self.item('眼部参考.png', 'v001')
+        video['input_references'] = [{'kind': 'image', 'path': ref['path'],
+                                      'label': '图片1', 'role': '眼部', 'sha256': 'example'}]
+        self.write([video])
+        output = render(self.manifest)
+        text = output.read_text(encoding='utf-8')
+        page = Page(text)
+        self.assertIn('查看本镜实际绑定的参考图与音色', text)
+        self.assertTrue(any(tag == 'img' and '%E7%9C%BC%E9%83%A8' in attrs['src'] for tag, attrs in page.elements))
+        before = output.read_bytes()
+        video['input_references'][0]['path'] = '../missing.png'
+        self.write([video])
+        with self.assertRaisesRegex(ValueError, '不存在'):
+            render(self.manifest)
+        self.assertEqual(output.read_bytes(), before)
+
     def test_replace_without_deleting_evidence_and_hide_empty_categories(self) -> None:
         old = self.item('票券 旧版.png', 'v001', current=False, status='已退回')
         new = self.item('票券 新版.png', 'v002')
