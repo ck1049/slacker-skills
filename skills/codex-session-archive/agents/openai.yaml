@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex 聊天归档与清理"
+  short_description: "无损压缩单个聊天日志，校验增量尾部后离线清理，并保存可恢复交接"
+  default_prompt: "使用 $codex-session-archive 备份指定聊天，准备交接和可核验的退出后清理方案。"

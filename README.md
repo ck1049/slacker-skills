@@ -27,6 +27,7 @@ npx skills add git@github.com:ck1049/slacker-skills.git
 
 | 技能 ID | 用途 | 主要依赖或限制 |
 | --- | --- | --- |
+| [`codex-session-archive`](skills/codex-session-archive/SKILL.md) | 指定 Codex 聊天的无损压缩、增量封存、交接与可核验恢复；授权后离线清理精确原日志 | Python 3.10+；已有3.14可用标准库Zstd，其他用gzip；删除仅支持Windows独占句柄，不改共享数据库 |
 | [`slacker-data-security`](skills/slacker-data-security/SKILL.md) | 分层数据安全方案：业务 RSA/AES、通信 RSA、OAEP 分段、AES-GCM、口令慢哈希及密钥轮换 | 语言无关；Java 示例仅供 JVM 技术栈参考 |
 | [`alipay-mihoyo-analysis`](skills/alipay-mihoyo-analysis/SKILL.md) | 从支付宝账单 PDF 提取米哈游交易，区分《原神》和《崩坏：星穹铁道》，生成 Excel 报告 | Python、`pdfplumber`、`openpyxl`；仅支持未加密的文本型 PDF |
 | [`jimeng-agent-workflow`](skills/jimeng-agent-workflow/SKILL.md) | 驱动即梦 Agent 完成漫剧需求、质量评估、角色/场景图、视频生成和进度监控 | `agent-browser` v0.23+、即梦账号，并配合漫剧脚手架 |
