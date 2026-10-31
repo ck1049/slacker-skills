@@ -14,17 +14,19 @@ nav{display:flex;gap:16px;flex-wrap:wrap;padding:14px 0;border-block:1px solid v
 .status{display:inline-block;padding:2px 9px;border:1px solid #617b94;border-radius:6px;font-size:13px;color:#dbebf4}.version{color:var(--muted);margin-right:10px}
 img,video{display:block;width:100%;max-height:540px;object-fit:contain;background:#0c1118;border-radius:6px;margin-top:14px}audio{width:100%;margin-top:14px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:15px/1.8 system-ui;margin:16px 0 0}details{margin-top:12px}summary{cursor:pointer}
 table{width:100%;border-collapse:collapse}th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px;overflow-wrap:anywhere}.table-wrap{overflow:auto}.path{width:100%;background:#101720;border:1px solid var(--line);color:#dae7ef;padding:8px;font:13px/1.6 monospace}.small{font-size:13px}#feedback{min-height:1.5em}.script-card{grid-column:1/-1}
+.adoption-list>summary{padding:14px 18px;background:var(--panel);border:1px solid var(--line);border-radius:8px;font-weight:600}.adoption-clip{margin-top:14px}.adoption-media{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}.adoption-media h4{margin:12px 0 0}.adoption-clip pre{font:12px/1.7 monospace}.adoption-list>.grid{margin-top:16px}#final .grid{grid-template-columns:1fr}#final video{max-height:78vh}
 @media(max-width:600px){main{padding:20px 14px 40px}article{padding:14px}.section-head{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body><main>
 <header><p class="small">每集制作总览 · 当前版本</p><h1>@@TITLE@@</h1><p>@@SUMMARY@@</p><p class="small">页面生成：@@RENDERED@@ · 制作记录：@@UPDATED@@</p></header>
-<div class="toolbar"><button type="button" id="refresh">刷新页面</button><label><input type="checkbox" id="auto-refresh" checked> 每15秒刷新（播放时暂停）</label>@@MANIFEST_LINK@@</div>
+<div class="toolbar"><button type="button" id="refresh">刷新页面</button><label><input type="checkbox" id="auto-refresh"> 自动刷新（默认关闭，播放时暂停）</label>@@MANIFEST_LINK@@</div>
 <p class="small">页面仅展示当前选定材料；“待审”不代表已采用。文件夹链接可能受浏览器限制，可复制路径到资源管理器；只发送 HTML 不会附带素材。</p>
 <p id="feedback" class="small" role="status" aria-live="polite"></p>
 <nav aria-label="本集内容">@@NAV@@</nav>
-@@TASKS@@
 @@SECTIONS@@
+@@ADOPTION@@
+@@TASKS@@
 </main>
 <script>
 (function () {
@@ -32,10 +34,10 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;border-bottom:1p
   const storageKey = 'episode-review:' + location.pathname;
   try {
     const saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
-    if (saved) { auto.checked = saved.auto !== false; window.scrollTo(0, saved.scroll || 0); }
+    if (saved) { auto.checked = saved.refreshPreferenceVersion === 2 && saved.auto === true; window.scrollTo(0, saved.scroll || 0); }
   } catch (_) {}
   function saveState() {
-    try { sessionStorage.setItem(storageKey, JSON.stringify({auto: auto.checked, scroll: window.scrollY})); } catch (_) {}
+    try { sessionStorage.setItem(storageKey, JSON.stringify({refreshPreferenceVersion: 2, auto: auto.checked, scroll: window.scrollY})); } catch (_) {}
   }
   function reload() { saveState(); location.reload(); }
   document.getElementById('refresh').addEventListener('click', reload);

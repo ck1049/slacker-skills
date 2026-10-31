@@ -31,7 +31,7 @@ class ReviewTests(unittest.TestCase):
         self.manifest.parent.mkdir()
 
     def write(self, items: list[dict], **extra: object) -> None:
-        self.manifest.write_text(json.dumps({'title': '另一题材 · 古装探案', 'items': items, **extra}, ensure_ascii=False), encoding='utf-8')
+        self.manifest.write_text(json.dumps({'title': '另一题材 · 古装探案', 'review_mode': 'materials', 'items': items, **extra}, ensure_ascii=False), encoding='utf-8')
 
     def item(self, filename: str, version: str, **extra: object) -> dict:
         (self.root / filename).write_bytes(b'fixture')
@@ -145,6 +145,103 @@ class ReviewTests(unittest.TestCase):
             render(self.manifest, protected)
         self.assertEqual(protected.read_text(encoding='utf-8'), '原剧本')
 
+    def test_default_complete_shows_only_new_full_cut(self) -> None:
+        old = self.item('旧整集.mp4', 'v001', id='旧整集', category='final', status='历史粗剪，用户已退回')
+        new = self.item('新整集.mp4', 'v002', id='当前整集', category='final')
+        clip = self.item('生成片段.mp4', 'v002', id='镜头01', category='video')
+        self.write([old, new, clip], review_mode='complete')
+        data = json.loads(self.manifest.read_text(encoding='utf-8'))
+        data.pop('review_mode')
+        self.manifest.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+        page = Page(render(self.manifest).read_text(encoding='utf-8'))
+        players = [attrs for tag, attrs in page.elements if tag == 'video']
+        self.assertEqual(len(players), 1)
+        self.assertIn('%E6%96%B0%E6%95%B4%E9%9B%86', players[0]['src'])
+        checkbox = next(attrs for tag, attrs in page.elements if attrs.get('id') == 'auto-refresh')
+        self.assertNotIn('checked', checkbox)
+        self.assertTrue((self.root / '旧整集.mp4').exists())
+
+    def test_stale_complete_cut_is_hidden_until_new_export(self) -> None:
+        old = self.item('原整集.mp4', 'v003', category='final', stale=True)
+        self.write([old], review_mode='complete', tasks=[{'name':'新整集','status':'重新导出中'}])
+        text = render(self.manifest).read_text(encoding='utf-8')
+        self.assertNotIn('<video ', text)
+        self.assertIn('重新导出中', text)
+        self.assertIn('最新完整候选正在制作或导出', text)
+
+    def test_multiple_complete_candidates_do_not_replace_existing_page(self) -> None:
+        first = self.item('整集甲.mp4', 'v001', category='final', id='甲')
+        second = self.item('整集乙.mp4', 'v002', category='final', id='乙')
+        self.write([first], review_mode='complete')
+        output = render(self.manifest)
+        previous = output.read_bytes()
+        self.write([first, second], review_mode='complete')
+        with self.assertRaisesRegex(ValueError, '一个当前完整候选'):
+            render(self.manifest)
+        self.assertEqual(output.read_bytes(), previous)
+
+
+    def test_complete_cut_adoption_is_explicit_collapsed_and_bound_to_final(self) -> None:
+        final = self.item('整集.mp4', 'v010', id='整集', category='final', sha256='final-hash')
+        used = self.item('采用源片.mp4', 'v003', id='采用', category='video')
+        unused = self.item('未采用源片.mp4', 'v009', id='未采用', category='video')
+        reference = self.item('本镜参考.png', 'v003', id='参考')
+        adoption = {'version':'v010', 'final_sha256':'final-hash', 'fps':24,
+                    'clips':[{'id':'采用', 'source_video':{'path':used['path']},
+                              'reference':{'path':reference['path']},
+                              'timeline_frame_range':[0,48], 'source_frame_range':[12,60]}], 'assets':[]}
+        self.write([final,used,unused,reference], review_mode='complete', adoption=adoption)
+        text = render(self.manifest).read_text(encoding='utf-8')
+        page = Page(text)
+        self.assertIn('00:00.000—00:02.000',text)
+        self.assertIn('源帧 [12, 60)',text)
+        self.assertIn('%E9%87%87%E7%94%A8%E6%BA%90%E7%89%87',text)
+        self.assertNotIn('%E6%9C%AA%E9%87%87%E7%94%A8',text)
+        self.assertLess(text.index('id="final"'),text.index('id="adoption"'))
+        toggles = [attrs for tag,attrs in page.elements if tag=='details' and attrs.get('class')=='adoption-list']
+        self.assertEqual(len(toggles),2)
+        self.assertTrue(all('open' not in attrs for attrs in toggles))
+        self.assertTrue(all(attrs.get('preload')=='none' and 'autoplay' not in attrs
+                            for tag,attrs in page.elements if tag in ('video','audio')))
+        output = self.manifest.parent/'本集制作总览.html'
+        original = output.read_bytes()
+        adoption['final_sha256']='wrong-cut'
+        self.write([final],review_mode='complete',adoption=adoption)
+        with self.assertRaisesRegex(ValueError,'版本或指纹不符'):
+            render(self.manifest)
+        self.assertEqual(output.read_bytes(),original)
+        adoption['final_sha256']='final-hash'
+        adoption['clips'][0]['reference']['path']='../缺失参考.png'
+        self.write([final],review_mode='complete',adoption=adoption)
+        with self.assertRaisesRegex(ValueError,'不存在'):
+            render(self.manifest)
+        self.assertEqual(output.read_bytes(),original)
+
+
+    def test_adoption_keeps_all_bound_media_and_rejects_missing_later_input(self) -> None:
+        final = self.item('整集.mp4', 'v011', id='整集', category='final', sha256='cut')
+        source = self.item('源片.mp4', 'v001', id='源片', category='video')
+        refs = []
+        for kind, filename in [('image','全身.png'),('image','构图.png'),('audio','音色.wav'),('video','动作.mp4')]:
+            asset = self.item(filename, 'v001')
+            refs.append({'kind':kind, 'path':asset['path'], 'label':filename, 'sha256':'input-hash'})
+        adoption = {'version':'v011','final_sha256':'cut','fps':24,'assets':[],
+                    'clips':[{'id':'镜头','source_video':{'path':source['path']},
+                              'source_frame_range':[0,48],'timeline_frame_range':[0,48],
+                              'input_references':refs}]}
+        self.write([final], review_mode='complete', adoption=adoption)
+        output = render(self.manifest)
+        previous = output.read_bytes()
+        page = Page(previous.decode('utf-8'))
+        kinds = [attrs['data-reference-kind'] for _,attrs in page.elements if 'data-reference-kind' in attrs]
+        self.assertEqual(kinds, ['image','image','audio','video'])
+        self.assertEqual(sum(tag=='audio' for tag,_ in page.elements), 1)
+        self.assertEqual(sum(tag=='video' for tag,_ in page.elements), 3)
+        refs[1]['path']='../不存在的第二张.png'
+        self.write([final], review_mode='complete', adoption=adoption)
+        with self.assertRaisesRegex(ValueError, '不存在'):
+            render(self.manifest)
+        self.assertEqual(output.read_bytes(), previous)
 
 if __name__ == '__main__':
     unittest.main()
