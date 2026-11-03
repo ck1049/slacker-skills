@@ -36,3 +36,11 @@
 来源：[官方 Token Plan FAQ](https://wiki.agnes-ai.com/en/docs/tokenplan)，生效日期 2026-10-29。免费/default 与企业认证/enterprise 的图片、视频 RPM 均改为动态调整，以控制台当前额度为准；不再按旧的免费视频 1 RPM、企业视频 2 RPM 或固定图片 RPM 安排批量任务。限时免费价格不代表固定吞吐量。
 
 Token Plan 视频当前 allowed/effective RPM 为 6/5，视频日配额 500 秒、图片日配额 4000 张；RPM 与日配额同时适用。同类型密钥共享额度，增加密钥不能增加额度。提交前核对所用密钥类型的当前限制，遇限流按服务端提示退避；提交结果不确定时仍保留原任务记录，不自动重提。此变更不改变请求或响应协议，客户端无需修改，也不自动切换模型或密钥。
+
+## Agent Plan 计费边界（2026-11-03 核验）
+
+来源：[官方定价](https://wiki.agnes-ai.com/en/docs/pricing)与[订阅计划](https://wiki.agnes-ai.com/en/docs/tokenplan)。试用价与限时免费仅适用于 default 用户的模型试用；Agent Plan 按模型标价折算 Credits，再应用当前套餐折扣，不享受模型限时免费。Token Plan 仅可用于 Flash 模型，既有权益保留，不因新增 Agent Plan 自动迁移。
+
+提交前确认本次使用的计费类型，不能仅看到 Flash 的零试用价就判定免费。Agent Plan 换算基准为 6600 Credits/USD（不是套餐购买单价）；超额参考图费用单独折算且不打折。套餐 Credits 受 5 小时窗口限制，不足时会扣充值 Credits；RPM 独立限制，实际余额、优惠和账单以控制台为准。不自动切换密钥或购买套餐。
+
+费用示例：12 秒 720P Flash 视频标价为 0.30 USD；Agent Plan 按 1980 Credits 乘当前视频折扣计算，不能按 default 试用的 0 元估算。此为预算示例，不代表已授权调用。接口协议不因计费方案改变，固定客户端无需修改。
